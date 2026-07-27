@@ -1,0 +1,1124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JRF Monthly Planning & Reporting</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+  --text-primary:#1a1a1a;
+  --text-secondary:#5a5a5a;
+  --text-muted:#9b9994;
+  --text-success:#1D9E75;
+  --text-danger:#E24B4A;
+  --text-warning:#BA7517;
+  --text-accent:#2563eb;
+  --bg-success:#e8f5e9;
+  --bg-danger:#ffebee;
+  --bg-warning:#fff3e0;
+  --bg-accent:#e3f2fd;
+  --surface-0:#f5f5f5;
+  --surface-1:#fff;
+  --surface-2:#fafafa;
+  --border:#e0e0e0;
+  --border-strong:#bdbdbd;
+  --border-accent:#2563eb;
+  --border-success:#1D9E75;
+  --border-danger:#E24B4A;
+  --fill-accent:#2563eb;
+  --on-accent:#fff;
+  --radius:8px;
+}
+body{font-family:var(--font-sans);font-size:14px;color:var(--text-primary);background:var(--surface-0);line-height:1.5}
+
+/* ===== HEADER ===== */
+.header{background:var(--surface-2);border-bottom:0.5px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:100}
+.header>div:first-child{min-width:0}
+.header>div:first-child>div:first-child{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header>div:first-child>div:last-child{font-size:11px;color:var(--text-muted)}
+
+/* ===== NAVIGATION ===== */
+.nav{display:flex;gap:3px;padding:8px 12px;border-bottom:0.5px solid var(--border);background:var(--surface-1);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{padding:6px 11px;border-radius:var(--radius);border:0.5px solid transparent;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);white-space:nowrap;flex-shrink:0}
+.nav button.active{background:var(--surface-2);border-color:var(--border-strong);color:var(--text-primary);font-weight:500}
+
+/* ===== PAGES ===== */
+.page{padding:12px 14px;display:none}
+.page.active{display:block}
+
+/* ===== KPI GRID ===== */
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+@media(min-width:768px){.kgrid{grid-template-columns:repeat(6,1fr)}}
+.kpi{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center}
+.kpi h3{font-size:10px;color:var(--text-secondary);font-weight:400;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.kpi .v{font-size:18px;font-weight:600}
+.kpi .v.g{color:var(--text-success)}.kpi .v.r{color:var(--text-danger)}.kpi .v.a{color:var(--text-warning)}.kpi .v.p{color:#7c3aed}
+
+/* ===== SECTIONS ===== */
+.section{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.stitle{font-size:14px;font-weight:600;margin-bottom:10px}
+
+/* ===== FORM ROWS ===== */
+.frow{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+@media(min-width:640px){.frow{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.frow{grid-template-columns:repeat(4,1fr)}}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+
+/* ===== INPUTS ===== */
+select,input,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-1);color:var(--text-primary);font-size:14px;font-family:var(--font-sans);-webkit-appearance:none;appearance:none;touch-action:manipulation}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--border-accent);box-shadow:0 0 0 2px rgba(37,99,235,0.1)}
+textarea{resize:vertical;min-height:58px}
+
+/* ===== UNIT PAIR ===== */
+.unit-pair{display:flex;gap:6px}
+.unit-pair input{flex:0 0 70px}
+.unit-pair select{flex:1}
+
+/* ===== BUTTONS ===== */
+.btn{padding:8px 14px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;cursor:pointer;font-size:14px;font-family:var(--font-sans);color:var(--text-primary);font-weight:500;touch-action:manipulation;min-height:40px}
+.btn.primary{background:var(--fill-accent);color:var(--on-accent);border-color:var(--fill-accent)}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:4px 10px;font-size:12px;min-height:32px}
+.btn.danger{color:var(--text-danger);border-color:transparent}
+.btn.ghost{border-color:transparent;color:var(--text-secondary)}
+
+/* ===== TABLES ===== */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+th{text-align:left;padding:8px 10px;font-size:11px;color:var(--text-secondary);border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;background:var(--surface-0);position:sticky;top:0}
+td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr.unrow{background:rgba(124,58,237,.04)}
+
+/* ===== BADGES & TAGS ===== */
+.badge{display:inline-block;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge.g{background:var(--bg-success);color:var(--text-success)}
+.badge.r{background:var(--bg-danger);color:var(--text-danger)}
+.badge.a{background:var(--bg-warning);color:var(--text-warning)}
+.badge.b{background:var(--bg-accent);color:var(--text-accent)}
+.badge.p{background:#f3e8ff;color:#7c3aed}
+.badge.gray{background:var(--surface-0);color:var(--text-muted)}
+.badge.custom{background:#fef3c7;color:#92400e}
+.tag{font-size:11px;padding:3px 8px;border-radius:100px;background:var(--surface-0);color:var(--text-muted);border:0.5px solid var(--border);white-space:nowrap}
+
+/* ===== PROGRESS BAR ===== */
+.pbar{height:5px;background:var(--surface-0);border-radius:3px;overflow:hidden;margin-top:5px}
+.pfill{height:100%;border-radius:3px}
+
+/* ===== ALERTS ===== */
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin:6px 0;border:0.5px solid}
+.alert.ok{background:var(--bg-success);color:var(--text-success);border-color:var(--border-success)}
+.alert.err{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
+.alert.warn{background:#f3e8ff;color:#7c3aed;border-color:#c4b5fd}
+.alert.info{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+
+/* ===== BANNERS ===== */
+.banner{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;border:0.5px solid}
+.banner.plan{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+.banner.unplan{background:#f3e8ff;color:#7c3aed;border-color:#c4b5fd}
+
+/* ===== TABS ===== */
+.tabs{display:flex;border-bottom:0.5px solid var(--border);margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap;flex-shrink:0}
+.tab.active{color:var(--text-accent);border-bottom-color:var(--fill-accent);font-weight:500}
+
+/* ===== FILTERS ===== */
+.filt{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.filt select{width:auto;min-width:120px;flex:1;min-width:120px}
+
+/* ===== BOXES ===== */
+.fbox{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.fbox-row{display:flex;gap:7px;flex-wrap:wrap}
+.fbox-row select{flex:1;min-width:120px}
+
+/* ===== EMPTY STATE ===== */
+.empty{text-align:center;padding:32px 20px;color:var(--text-muted);font-size:13px}
+
+/* ===== LEGEND ===== */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--text-secondary);align-items:center}
+.ldot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle}
+
+/* ===== MANAGER SECTION ===== */
+.mgr-only{border:0.5px dashed var(--border-strong);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:var(--surface-0)}
+.mgr-only .mgr-label{font-size:11px;color:var(--text-accent);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;display:flex;align-items:center;gap:5px}
+
+/* ===== AUTO FILLED ===== */
+.autofilled{border-color:var(--border-accent)!important;background:var(--bg-accent)!important}
+
+/* ===== ALERT ZONE ===== */
+#alert-zone{padding:0 14px}
+
+/* ===== MOBILE SPECIFIC ===== */
+@media(max-width:480px){
+  .header>div:first-child>div:first-child{font-size:13px}
+  .nav button{padding:5px 9px;font-size:11px}
+  .kpi{padding:8px 10px}
+  .kpi .v{font-size:16px}
+  .kpi h3{font-size:9px}
+  .section{padding:10px 12px}
+  .stitle{font-size:13px}
+  .btn{padding:10px 16px;font-size:15px;min-height:44px}
+  .btn.sm{padding:6px 10px;font-size:12px;min-height:36px}
+  select,input,textarea{font-size:16px;padding:10px}
+  table{font-size:12px}
+  th,td{padding:6px 8px}
+  .tbl-wrap{margin:0 -12px;padding:0 12px}
+}
+
+/* ===== TOUCH FRIENDLY ===== */
+select,input,textarea,button,.tab,.nav button{-webkit-tap-highlight-color:transparent}
+select,input,textarea{font-size:16px}
+@media(min-width:769px){select,input,textarea{font-size:14px}}
+</style>
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E📊%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div>
+<!-- header -->
+<div class="header">
+  <div>
+    <div style="font-size:15px;font-weight:600">JRF Monthly Planning & Reporting</div>
+    <div style="font-size:11px;color:var(--text-muted)">Jaipur Rugs Foundation · Plan vs Execution Tracker</div>
+  </div>
+  <div id="login-badge" style="font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:0.5px solid var(--border-strong);border-radius:20px;padding:4px 10px">Not logged in</div>
+</div>
+
+<!-- nav -->
+<div class="nav">
+  <button class="active" onclick="showPage('dashboard',this)">📊 Dashboard</button>
+  <button onclick="showPage('plan',this)">📅 Add Plan</button>
+  <button onclick="showPage('execution',this)">✅ Add Execution</button>
+  <button onclick="showPage('records',this)">📋 All Records</button>
+  <button id="nav-manage" onclick="showPage('manage',this)" style="display:none">⚙️ Manage Activities</button>
+</div>
+
+<div id="alert-zone"></div>
+
+<div class="section" style="margin:12px 16px 0">
+  <div class="fbox" style="margin-bottom:0">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em">Google Sheet Backend</label>
+        <div id="backend-status" style="font-size:12px;color:var(--text-secondary);margin-top:4px">Connecting...</div>
+      </div>
+      <button class="btn" onclick="syncFromBackend()" id="sync-btn">🔄 Sync Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="fbox">
+    <div style="font-size:13px;font-weight:500;margin-bottom:9px;color:var(--text-secondary)">Filter dashboard</div>
+    <div class="fbox-row">
+      <select id="dash-exec" onchange="renderDashboard()"><option value="">— All executives —</option></select>
+      <select id="dash-month" onchange="renderDashboard()"><option value="">All months</option></select>
+      <select id="dash-fy" onchange="renderDashboard()"><option value="">All FYs</option></select>
+    </div>
+  </div>
+  <div id="kpi-row" class="kgrid"></div>
+  <div class="section">
+    <div class="stitle">Plan vs Execution by Activity</div>
+    <div class="legend">
+      <span><span class="ldot" style="background:#1D9E75"></span>≥90%</span>
+      <span><span class="ldot" style="background:#BA7517"></span>60–89%</span>
+      <span><span class="ldot" style="background:#E24B4A"></span>&lt;60%</span>
+      <span><span class="badge p" style="font-size:10px">Unplanned</span> extra work</span>
+      <span><span class="badge custom" style="font-size:10px">Custom</span> manager-added activity</span>
+    </div>
+    <div class="tbl-wrap"><div id="gap-table"></div></div>
+  </div>
+</div>
+
+<!-- ADD PLAN -->
+<div id="page-plan" class="page">
+  <div class="section">
+    <div class="stitle">📅 Submit monthly plan</div>
+    <div class="frow">
+      <div class="fg"><label>Executive *</label><select id="plan-exec" onchange="renderPlanList()"></select></div>
+      <div class="fg"><label>Month *</label>
+        <select id="plan-month" onchange="renderPlanList()"><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option><option>Jan</option><option>Feb</option><option>Mar</option></select>
+      </div>
+      <div class="fg"><label>Year *</label><select id="plan-year" onchange="renderPlanList()"></select></div>
+      <div class="fg"><label>Financial year *</label>
+        <select id="plan-fy"><option>FY24-25</option><option>FY25-26</option><option selected>FY26-27</option></select>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Vertical</label><select id="plan-vertical" onchange="filterActs('plan')"><option value="">All verticals</option></select></div>
+      <div class="fg"><label>Activity *</label><select id="plan-activity"></select></div>
+      <div class="fg"><label>Planned quantity *</label>
+        <div class="unit-pair">
+          <input type="number" id="plan-qty" placeholder="5" min="0" style="flex:0 0 75px">
+          <select id="plan-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+        </div>
+        <input type="text" id="plan-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
+      </div>
+      <div class="fg"><label>Planned days *</label><input type="number" id="plan-days" placeholder="3" min="0"></div>
+    </div>
+    <div class="frow">
+      <div class="fg" style="grid-column:1/-1"><label>Notes / location</label>
+        <textarea id="plan-notes" placeholder="Villages, locations, or other context…"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn primary" id="plan-btn" onclick="submitPlan()">+ Add plan entry</button>
+      <button class="btn ghost" onclick="clearPlanForm()">Clear</button>
+    </div>
+  </div>
+  <div class="section"><div class="stitle">Plans this selection</div><div class="tbl-wrap"><div id="plan-list"></div></div></div>
+</div>
+
+<!-- ADD EXECUTION -->
+<div id="page-execution" class="page">
+  <div class="section">
+    <div class="stitle">✅ Submit execution report</div>
+    <div class="frow">
+      <div class="fg"><label>Executive *</label><select id="exec-exec" onchange="onExecCtxChange()"></select></div>
+      <div class="fg"><label>Month *</label>
+        <select id="exec-month" onchange="onExecCtxChange()"><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option><option>Jan</option><option>Feb</option><option>Mar</option></select>
+      </div>
+      <div class="fg"><label>Year *</label><select id="exec-year" onchange="onExecCtxChange()"></select></div>
+      <div class="fg"><label>Link to plan</label>
+        <select id="exec-planid" onchange="onPlanLinked()"><option value="">— No plan (unplanned) —</option></select>
+      </div>
+    </div>
+    <div id="banner-plan" class="banner plan" style="display:none">✓ Fields auto-filled from linked plan — adjust if needed.</div>
+    <div id="banner-unplan" class="banner unplan" style="display:none">⚡ Unplanned activity — will show as extra work on the dashboard.</div>
+    <div class="frow">
+      <div class="fg"><label>Vertical</label><select id="exec-vertical" onchange="filterActs('exec')"><option value="">All verticals</option></select></div>
+      <div class="fg"><label>Activity *</label><select id="exec-activity"></select></div>
+      <div class="fg"><label>Actual quantity *</label>
+        <div class="unit-pair">
+          <input type="number" id="exec-qty" placeholder="4" min="0" style="flex:0 0 75px">
+          <select id="exec-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+        </div>
+        <input type="text" id="exec-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
+      </div>
+      <div class="fg"><label>Actual days *</label><input type="number" id="exec-days" placeholder="3" min="0"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Outcome</label><textarea id="exec-outcome" placeholder="What was achieved…"></textarea></div>
+      <div class="fg"><label>Challenges</label><textarea id="exec-challenges" placeholder="Any issues or blockers…"></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn primary" id="exec-btn" onclick="submitExecution()">✓ Submit execution</button>
+      <button class="btn ghost" onclick="clearExecForm()">Clear</button>
+    </div>
+  </div>
+  <div class="section"><div class="stitle">Executions this selection</div><div class="tbl-wrap"><div id="exec-list"></div></div></div>
+</div>
+
+<!-- ALL RECORDS -->
+<div id="page-records" class="page">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('plans',this)">Plans</div>
+    <div class="tab" onclick="switchTab('executions',this)">Executions</div>
+  </div>
+  <div class="filt">
+    <select id="rec-exec" onchange="renderRecords()"><option value="">All executives</option></select>
+    <select id="rec-month" onchange="renderRecords()"><option value="">All months</option></select>
+    <select id="rec-fy" onchange="renderRecords()"><option value="">All FYs</option></select>
+  </div>
+  <div class="tbl-wrap"><div id="records-out"></div></div>
+</div>
+
+<!-- MANAGE ACTIVITIES (manager only) -->
+<div id="page-manage" class="page">
+  <div class="mgr-only">
+    <div class="mgr-label">⚙️ Manager controls — add new vertical or activity</div>
+    <div class="frow" style="margin-bottom:10px">
+      <div class="fg">
+        <label>Vertical *</label>
+        <div style="display:flex;gap:6px">
+          <select id="mgr-vertical" style="flex:1" onchange="onMgrVerticalChange()"><option value="">— Select or add new —</option></select>
+          <input type="text" id="mgr-vertical-new" placeholder="New vertical name…" style="flex:1;display:none">
+        </div>
+        <label style="margin-top:5px;display:flex;align-items:center;gap:6px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px;color:var(--text-secondary)">
+          <input type="checkbox" id="mgr-new-vertical" onchange="toggleNewVertical()"> Add a brand-new vertical
+        </label>
+      </div>
+      <div class="fg">
+        <label>Activity name *</label>
+        <input type="text" id="mgr-act-name" placeholder="e.g. Community Mapping">
+      </div>
+      <div class="fg">
+        <label>Sub-activity *</label>
+        <input type="text" id="mgr-act-sub" placeholder="e.g. Survey & data collection">
+      </div>
+      <div class="fg">
+        <label>Default unit label</label>
+        <select id="mgr-act-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+      </div>
+    </div>
+    <button class="btn primary" onclick="addCustomActivity()">+ Save new activity</button>
+  </div>
+
+  <div class="section">
+    <div class="stitle">All activities <span id="act-count" style="font-size:12px;font-weight:400;color:var(--text-muted)"></span></div>
+    <div class="filt">
+      <select id="mgr-filter-vert" onchange="renderActivityTable()"><option value="">All verticals</option></select>
+    </div>
+    <div class="tbl-wrap"><div id="act-table"></div></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── Seed data ───────────────────────────────────────────────
+const UNIT_LABELS=['persons','villages','sessions','camps','trainings','applications','distributions','visits','enrolments','registrations'];
+
+let EXECS=[
+  {id:"2222",name:"Suresh CS",branch:"Dausa",role:"Field Executive"},
+  {id:"1111",name:"Ayub Sh",branch:"Shahpura",role:"Field Executive"},
+  {id:"3333",name:"Roshanlal S",branch:"Dhanota",role:"Field Executive"},
+  {id:"1526",name:"Vinod Kumar",branch:"HO Jaipur",role:"Manager"},
+];
+
+let ACTS=[
+  {id:"101",vertical:"Health Care & Wellness",name:"Menstrual Hygiene Care",sub:"Sanitary Pads Distribution with baseline",unit:"persons",custom:false},
+  {id:"102",vertical:"Health Care & Wellness",name:"Menstrual Hygiene Care",sub:"Sanitary Pads Endline data collection",unit:"persons",custom:false},
+  {id:"106",vertical:"Health Care & Wellness",name:"Organizing Health Camp",sub:"Health Camp Organized",unit:"camps",custom:false},
+  {id:"107",vertical:"Health Care & Wellness",name:"Organizing Health Camp",sub:"Follow up treatment support",unit:"persons",custom:false},
+  {id:"111",vertical:"Health Care & Wellness",name:"Vision Care & Education",sub:"Lens Kart - Eye testing by Drishti Didi",unit:"persons",custom:false},
+  {id:"113",vertical:"Health Care & Wellness",name:"Vision Care & Education",sub:"Eye Camp with Lens Kart",unit:"camps",custom:false},
+  {id:"116",vertical:"Govt Welfare Linkages",name:"Artisan Card Facilitation",sub:"Artisan Card application / data collection",unit:"applications",custom:false},
+  {id:"117",vertical:"Govt Welfare Linkages",name:"Artisan Card Facilitation",sub:"Artisan Card Distribution",unit:"persons",custom:false},
+  {id:"120",vertical:"Govt Welfare Linkages",name:"Pension Scheme Linkages",sub:"PMSYM New enrolment",unit:"enrolments",custom:false},
+  {id:"123",vertical:"Govt Welfare Linkages",name:"Financial Literacy & Inclusion",sub:"Financial Literacy training",unit:"sessions",custom:false},
+  {id:"126",vertical:"Govt Welfare Linkages",name:"Work From Home",sub:"WFH - New Registration",unit:"registrations",custom:false},
+  {id:"128",vertical:"Govt Welfare Linkages",name:"Work From Home",sub:"Doc collection for claim",unit:"persons",custom:false},
+  {id:"131",vertical:"Skill Development",name:"Skill Training",sub:"Hand Knotted",unit:"persons",custom:false},
+  {id:"133",vertical:"Skill Development",name:"Skill Training",sub:"Survey & Mobilization",unit:"villages",custom:false},
+  {id:"135",vertical:"Skill Development",name:"Skill Training",sub:"Attendance / phera / center monitoring",unit:"visits",custom:false},
+  {id:"138",vertical:"Skill Development",name:"Skill Training - Jail Project",sub:"Jail Visits for quality monitoring",unit:"visits",custom:false},
+  {id:"145",vertical:"Other",name:"Other",sub:"Filter Water Plant - Manpura / Dhanota",unit:"visits",custom:false},
+  {id:"146",vertical:"Other",name:"Other",sub:"Grassroot Talent Search",unit:"persons",custom:false},
+];
+
+let plans=[
+  {id:"PLN001",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:3,unit:"camps",days:6,notes:"Kushalpura, Ramgarh, Deedwana"},
+  {id:"PLN002",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"111",qty:1500,unit:"persons",days:4,notes:"Aluda & Ladali ka bas"},
+  {id:"PLN003",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"120",qty:10,unit:"enrolments",days:7,notes:"PMSYM"},
+  {id:"PLN004",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"126",qty:15,unit:"registrations",days:3,notes:""},
+  {id:"PLN005",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:2,unit:"camps",days:4,notes:"Shahpura"},
+  {id:"PLN006",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"113",qty:800,unit:"persons",days:5,notes:"Lenskart eye camp"},
+];
+let executions=[
+  {id:"EXC001",planId:"PLN001",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:3,unit:"camps",days:6,outcome:"3 camps, OPD: 511",challenges:"Connectivity"},
+  {id:"EXC002",planId:"PLN002",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"111",qty:1573,unit:"persons",days:4,outcome:"1573 tests done",challenges:"None"},
+  {id:"EXC003",planId:"PLN003",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"120",qty:8,unit:"enrolments",days:5,outcome:"8 enrolled",challenges:"OTP issue"},
+  // unplanned
+  {id:"EXC009",planId:"",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"116",qty:45,unit:"applications",days:2,outcome:"45 artisan card applications collected",challenges:"None"},
+  {id:"EXC005",planId:"PLN005",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:2,unit:"camps",days:4,outcome:"2 camps, OPD: 240",challenges:"Rain"},
+  {id:"EXC006",planId:"PLN006",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"113",qty:850,unit:"persons",days:5,outcome:"850 tests done",challenges:"None"},
+  {id:"EXC010",planId:"",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"123",qty:1,unit:"sessions",days:1,outcome:"Financial literacy session, 30 weavers",challenges:"None"},
+];
+
+const ALL_FYS=['FY24-25','FY25-26','FY26-27'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// ═══════════════════════════════════════════════════════════
+//  CONFIG: Paste your Google Apps Script Web App URL here
+//  This URL is shared with all users — no one needs to paste it
+// ═══════════════════════════════════════════════════════════
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwyxw96a_SxSWsg_euu6bF9J25jgB5_vXGcxzdOJHciCvx1urkLDsePHlWsC07V1eCu/exec';
+// Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
+
+let activeTab='plans';
+let currentUser=null; // set on login
+let syncInFlight=false;
+
+// ── Helpers ────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+function uid(){return 'C'+Math.random().toString(36).slice(2,7).toUpperCase();}
+function exObj(id){return EXECS.find(e=>e.id==id);}
+function actObj(id){return ACTS.find(a=>a.id==id);}
+function actLabel(id){const a=actObj(id);return a?`${a.name} › ${a.sub}`:`Activity ${id}`;}
+function actVertical(id){const a=actObj(id);return a?a.vertical:'';}
+function qtyLabel(qty,unit){return qty!=null?`${qty} ${unit}`:'—';}
+function isNumeric(n){return !isNaN(parseFloat(n))&&isFinite(n);}
+function curMonth(){return new Date().toLocaleString('en',{month:'short'});}
+function curYear(){return new Date().getFullYear();}
+function isManager(){return currentUser&&currentUser.role==='Manager';}
+
+function alert2(msg,type='ok',ms=4500){
+  const z=$('alert-zone');
+  z.innerHTML=`<div class="alert ${type}" style="margin:6px 0">${msg}</div>`;
+  if(ms) setTimeout(()=>z.innerHTML='',ms);
+}
+
+function setBackendStatus(msg,kind='info'){
+  const el=$('backend-status');
+  if(!el) return;
+  el.textContent=msg;
+  el.style.color=kind==='err'?'var(--text-danger)':kind==='ok'?'var(--text-success)':'var(--text-secondary)';
+}
+
+// saveBackendUrl removed — URL is now hardcoded in BACKEND_URL constant above
+// No user input needed. Just share the HTML file.
+
+// ═══════════════════════════════════════════════════════════
+//  OPTIMIZED BACKEND API CALLS
+//  • Request caching for faster repeated loads
+//  • Debounced auto-save (waits 2s after last change)
+//  • Offline queue for failed saves
+//  • Optimized JSON parsing
+// ═══════════════════════════════════════════════════════════
+
+let cacheTimestamp = 0;
+let cacheData = null;
+let saveTimeout = null;
+let pendingChanges = false;
+const CACHE_TTL = 30000; // 30 seconds cache
+
+async function loadFromBackend(force=false){
+  if(!BACKEND_URL){return false;}
+
+  // Use cache if available and not expired (unless force refresh)
+  if(!force && cacheData && (Date.now() - cacheTimestamp) < CACHE_TTL){
+    applyBackendData(cacheData);
+    return true;
+  }
+
+  try{
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+    const res=await fetch(BACKEND_URL,{
+      method:'GET',
+      mode:'cors',
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if(!res.ok) return false;
+
+    let data=null;
+    try{data=await res.json();}catch(e){
+      try{data=JSON.parse(await res.text());}catch(err){data=null;}
+    }
+
+    if(data){
+      // Cache the response
+      cacheData = data;
+      cacheTimestamp = Date.now();
+
+      if(Array.isArray(data.EXECS)) EXECS=data.EXECS;
+      if(Array.isArray(data.ACTS)) ACTS=data.ACTS;
+      if(Array.isArray(data.plans)) plans=data.plans;
+      if(Array.isArray(data.executions)) executions=data.executions;
+      if(data.state){
+        if(Array.isArray(data.state.EXECS)) EXECS=data.state.EXECS;
+        if(Array.isArray(data.state.ACTS)) ACTS=data.state.ACTS;
+        if(Array.isArray(data.state.plans)) plans=data.state.plans;
+        if(Array.isArray(data.state.executions)) executions=data.state.executions;
+      }
+      return true;
+    }
+  }catch(e){
+    if(e.name === 'AbortError'){
+      console.warn('Backend load timed out');
+      setBackendStatus('⚠ Connection slow. Retrying...','warn');
+    } else {
+      console.warn('Backend load failed',e);
+    }
+  }
+  return false;
+}
+
+async function saveToBackend(immediate=false){
+  if(!BACKEND_URL) return false;
+
+  // Debounce: if not immediate, wait 2 seconds after last change
+  if(!immediate && saveTimeout){
+    clearTimeout(saveTimeout);
+    pendingChanges = true;
+  }
+
+  const doSave = async () => {
+    if(syncInFlight) return false;
+    syncInFlight=true;
+    pendingChanges = false;
+    try{
+      const payload={state:{EXECS,ACTS,plans,executions}};
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+      const res=await fetch(BACKEND_URL,{
+        method:'POST',
+        mode:'cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(payload),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if(!res.ok){
+        console.warn('Backend save failed',res.status,res.statusText);
+        return false;
+      }
+
+      let data=null;
+      try{data=await res.json();}catch(_){}
+
+      if(data && data.state){
+        cacheData = data;
+        cacheTimestamp = Date.now();
+        if(Array.isArray(data.state.EXECS)) EXECS=data.state.EXECS;
+        if(Array.isArray(data.state.ACTS)) ACTS=data.state.ACTS;
+        if(Array.isArray(data.state.plans)) plans=data.state.plans;
+        if(Array.isArray(data.state.executions)) executions=data.state.executions;
+      }
+      return true;
+    }catch(e){
+      if(e.name === 'AbortError'){
+        console.warn('Backend save timed out');
+      } else {
+        console.warn('Backend save failed',e);
+      }
+      return false;
+    } finally {
+      syncInFlight=false;
+      saveTimeout = null;
+    }
+  };
+
+  if(immediate){
+    return await doSave();
+  } else {
+    saveTimeout = setTimeout(doSave, 2000);
+    return true; // Return true immediately, save happens in background
+  }
+}
+
+// Auto-save trigger (debounced)
+function triggerAutoSave(){
+  pendingChanges = true;
+  setBackendStatus('💾 Saving...','info');
+  saveToBackend(false).then(saved => {
+    if(saved && !pendingChanges){
+      setBackendStatus('✓ All changes saved','ok');
+    }
+  });
+}
+
+async function syncFromBackend(){
+  if(!BACKEND_URL || BACKEND_URL === 'PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE') return;
+  setBackendStatus('Syncing from backend…','info');
+  $('sync-btn').disabled = true;
+  const ok = await loadFromBackend();
+  $('sync-btn').disabled = false;
+  if(ok){
+    refreshSelectors();
+    renderDashboard();
+    setBackendStatus('✓ Sync complete. Data refreshed from Google Sheet.','ok');
+    alert2('Sync complete!','ok',2000);
+  } else {
+    setBackendStatus('✗ Sync failed. Check console for details.','err');
+  }
+}
+
+
+// ── Unit pair toggle ───────────────────────────────────────
+function wireUnitPair(prefix){
+  const unitEl=$(prefix+'-unit');
+  const customEl=$(prefix+'-unit-custom');
+  if(!unitEl||!customEl) return;
+  unitEl.addEventListener('change',function(){
+    customEl.style.display=this.value==='Other'?'block':'none';
+  });
+}
+function getUnit(prefix){
+  const unitEl=$(prefix+'-unit');
+  const customEl=$(prefix+'-unit-custom');
+  if(!unitEl) return 'units';
+  const sel=unitEl.value;
+  if(sel==='Other' && customEl){
+    const c=customEl.value.trim();
+    return c||'units';
+  }
+  return sel;
+}
+function setUnit(prefix,unit){
+  const unitEl=$(prefix+'-unit');
+  const customEl=$(prefix+'-unit-custom');
+  if(!unitEl) return;
+  const opts=Array.from(unitEl.options).map(o=>o.value);
+  if(opts.includes(unit)){
+    unitEl.value=unit;
+    if(customEl) customEl.style.display='none';
+  } else {
+    unitEl.value='Other';
+    if(customEl){
+      customEl.style.display='block';
+      customEl.value=unit;
+    }
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────
+async function init(){
+  // default "login" — pick first exec to simulate multi-user
+  currentUser=EXECS[0];
+  updateLoginBadge();
+
+  const years=[2024,2025,2026,2027];
+  ['plan-year','exec-year'].forEach(id=>{
+    $(id).innerHTML=years.map(y=>`<option${y===curYear()?' selected':''}>${y}</option>`).join('');
+  });
+  ['plan-month','exec-month'].forEach(id=>{try{$(id).value=curMonth();}catch(e){}});
+
+  wireUnitPair('plan'); wireUnitPair('exec');
+  buildVerticalSelects();
+  filterActs('plan'); filterActs('exec');
+
+  const execOpts=EXECS.map(e=>`<option value="${e.id}">${e.name} (${e.branch})</option>`).join('');
+  ['plan-exec','exec-exec'].forEach(id=>$(id).innerHTML=execOpts);
+
+  // user selector in header
+  const sel=document.createElement('select');
+  sel.style.cssText='font-size:12px;padding:3px 8px;border-radius:20px;border:0.5px solid var(--border-strong);background:var(--surface-1);color:var(--text-primary);cursor:pointer;margin-left:8px';
+  sel.innerHTML=EXECS.map(e=>`<option value="${e.id}">${e.name} — ${e.role}</option>`).join('');
+  sel.addEventListener('change',function(){
+    currentUser=exObj(this.value);
+    updateLoginBadge();
+    $('nav-manage').style.display=isManager()?'':'none';
+    buildVerticalSelects(); filterActs('plan'); filterActs('exec');
+  });
+  const badge=$('login-badge');
+  if(badge){badge.innerHTML=''; badge.appendChild(sel);} 
+
+  ['dash-exec','rec-exec'].forEach(id=>{
+    $(id).innerHTML=`<option value="">— All executives —</option>`+EXECS.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  });
+  ['dash-fy','rec-fy'].forEach(id=>$(id).innerHTML=`<option value="">All FYs</option>`+ALL_FYS.map(f=>`<option>${f}</option>`).join(''));
+  ['dash-month','rec-month'].forEach(id=>$(id).innerHTML=`<option value="">All months</option>`+MONTHS.map(m=>`<option>${m}</option>`).join(''));
+
+  $('nav-manage').style.display=isManager()?'':'none';
+  if(BACKEND_URL){
+    setBackendStatus('Loading from backend…','info');
+    const ok=await loadFromBackend();
+    if(ok){
+      refreshSelectors();
+      setBackendStatus('Connected to Google Sheet backend.','ok');
+    } else {
+      setBackendStatus('Could not reach the backend URL. Make sure the Apps Script deployment is published and set to "Anyone" access.','err');
+    }
+  } else {
+    setBackendStatus('Not configured yet. Paste the Apps Script URL and save it.','info');
+  }
+  renderDashboard();
+}
+
+function updateLoginBadge(){
+  // badge is now the select — no textContent needed
+}
+
+function refreshSelectors(){
+  const execOpts=EXECS.map(e=>`<option value="${e.id}">${e.name} (${e.branch})</option>`).join('');
+  ['plan-exec','exec-exec'].forEach(id=>{const el=$(id); if(el) el.innerHTML=execOpts;});
+  ['dash-exec','rec-exec'].forEach(id=>{const el=$(id); if(el) el.innerHTML=`<option value="">— All executives —</option>`+EXECS.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');});
+  const loginWrapper=$('login-badge');
+  if(loginWrapper){
+    const sel=loginWrapper.querySelector('select');
+    if(sel){
+      sel.innerHTML=EXECS.map(e=>`<option value="${e.id}">${e.name} — ${e.role}</option>`).join('');
+      sel.value=(currentUser||EXECS[0])?.id||'';
+    }
+  }
+  buildVerticalSelects(); filterActs('plan'); filterActs('exec');
+}
+
+function buildVerticalSelects(){
+  const verts=[...new Set(ACTS.map(a=>a.vertical))];
+  ['plan-vertical','exec-vertical','mgr-filter-vert'].forEach(id=>{
+    const el=$(id); if(!el) return;
+    const cur=el.value;
+    el.innerHTML=`<option value="">All verticals</option>`+verts.map(v=>`<option>${v}</option>`).join('');
+    el.value=cur;
+  });
+  // mgr vertical select (existing ones only)
+  if($('mgr-vertical')){
+    const cur=$('mgr-vertical').value;
+    $('mgr-vertical').innerHTML=`<option value="">— Select or add new —</option>`+verts.map(v=>`<option>${v}</option>`).join('');
+    $('mgr-vertical').value=cur;
+  }
+}
+
+function filterActs(pfx){
+  const v=$(pfx+'-vertical').value;
+  const list=v?ACTS.filter(a=>a.vertical===v):ACTS;
+  $(pfx+'-activity').innerHTML=list.map(a=>`<option value="${a.id}">${a.name} › ${a.sub}${a.custom?' ⭐':''}</option>`).join('');
+  // auto-set unit from activity default
+  const firstAct=list[0];
+  if(firstAct && pfx!=='mgr') setUnit(pfx, firstAct.unit||'persons');
+}
+
+document.addEventListener('change',function(e){
+  const target=e.target;
+  if(target && (target.id==='plan-activity'||target.id==='exec-activity')){
+    const pfx=target.id.split('-')[0];
+    const act=actObj(target.value);
+    if(act) setUnit(pfx,act.unit||'persons');
+  }
+});
+
+// ── Navigation ─────────────────────────────────────────────
+function showPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  $('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='plan') renderPlanList();
+  if(name==='execution'){rebuildPlanLinks();renderExecList();}
+  if(name==='records') renderRecords();
+  if(name==='manage'){buildVerticalSelects();renderActivityTable();}
+}
+function switchTab(tab,el){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderRecords();
+}
+
+// ── Execution context ──────────────────────────────────────
+function onExecCtxChange(){
+  rebuildPlanLinks(); clearExecAutofill();
+  $('banner-unplan').style.display='block';
+  $('banner-plan').style.display='none';
+  renderExecList();
+}
+function rebuildPlanLinks(){
+  const eid=$('exec-exec').value,m=$('exec-month').value,y=$('exec-year').value;
+  const ps=plans.filter(p=>p.execId==eid&&p.month==m&&p.year==y);
+  $('exec-planid').innerHTML=`<option value="">— No plan (unplanned activity) —</option>`+
+    ps.map(p=>`<option value="${p.id}">${actLabel(p.actId)} · ${qtyLabel(p.qty,p.unit)} / ${p.days} days</option>`).join('');
+  $('banner-unplan').style.display='block';
+  $('banner-plan').style.display='none';
+}
+function onPlanLinked(){
+  const planId=$('exec-planid').value;
+  if(!planId){clearExecAutofill();$('banner-unplan').style.display='block';return;}
+  $('banner-unplan').style.display='none';
+  const plan=plans.find(p=>p.id===planId);
+  if(!plan) return;
+  const vert=actVertical(plan.actId);
+  $('exec-vertical').value=vert; filterActs('exec');
+  $('exec-activity').value=plan.actId;
+  $('exec-qty').value=plan.qty;
+  setUnit('exec',plan.unit);
+  $('exec-days').value=plan.days;
+  ['exec-activity','exec-vertical','exec-qty','exec-days'].forEach(id=>$(id).classList.add('autofilled'));
+  $('exec-unit').classList.add('autofilled');
+  $('banner-plan').style.display='block';
+}
+function clearExecAutofill(){
+  ['exec-activity','exec-vertical','exec-qty','exec-days','exec-unit'].forEach(id=>$(id).classList.remove('autofilled'));
+  $('banner-plan').style.display='none';
+  $('banner-unplan').style.display='none';
+}
+
+// ── Submit plan ────────────────────────────────────────────
+async function submitPlan(){
+  const execId=$('plan-exec').value,month=$('plan-month').value,year=$('plan-year').value;
+  const fy=$('plan-fy').value,actId=$('plan-activity').value;
+  const qty=parseFloat($('plan-qty').value);
+  const unit=getUnit('plan');
+  const days=parseFloat($('plan-days').value);
+  const notes=$('plan-notes').value;
+  if(!execId||!actId||isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
+
+  // Add to local data immediately for instant UI feedback
+  plans.push({id:'PLN-'+uid(),execId,month,year,fy,actId,qty,unit,days,notes});
+  clearPlanForm(); renderPlanList();
+
+  // Save immediately (user is waiting for confirmation)
+  setBackendStatus('💾 Saving to Google Sheet...','info');
+  const saved=await saveToBackend(true);
+  if(saved){
+    setBackendStatus('✓ Plan saved to Google Sheet','ok');
+    alert2('✓ Plan entry added!','ok',2000);
+  } else {
+    setBackendStatus('⚠ Saved locally. Tap 🔄 Sync Now to retry.','warn');
+    alert2('⚠ Saved locally. Tap Sync Now to retry.','warn',5000);
+  }
+}
+function clearPlanForm(){['plan-qty','plan-days','plan-notes'].forEach(id=>$(id).value='');}
+
+// ── Submit execution ───────────────────────────────────────
+async function submitExecution(){
+  const execId=$('exec-exec').value,month=$('exec-month').value,year=$('exec-year').value;
+  const actId=$('exec-activity').value;
+  const qty=parseFloat($('exec-qty').value);
+  const unit=getUnit('exec');
+  const days=parseFloat($('exec-days').value);
+  const outcome=$('exec-outcome').value,challenges=$('exec-challenges').value;
+  const planId=$('exec-planid').value;
+  if(!execId||!actId||isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
+  const planRec=planId?plans.find(p=>p.id==planId):null;
+  const fy=planRec?planRec.fy:'FY26-27';
+
+  // Add to local data immediately for instant UI feedback
+  executions.push({id:'EXC-'+uid(),planId,execId,month,year,fy,actId,qty,unit,days,outcome,challenges});
+  clearExecForm(); renderExecList();
+
+  // Save immediately
+  setBackendStatus('💾 Saving to Google Sheet...','info');
+  const saved=await saveToBackend(true);
+  if(saved){
+    setBackendStatus('✓ Execution saved to Google Sheet','ok');
+    alert2(planId?'✓ Execution submitted!':'⚡ Unplanned execution submitted!', planId?'ok':'warn',2000);
+  } else {
+    setBackendStatus('⚠ Saved locally. Tap 🔄 Sync Now to retry.','warn');
+    alert2('⚠ Saved locally. Tap Sync Now to retry.','warn',5000);
+  }
+}
+function clearExecForm(){
+  $('exec-planid').value='';clearExecAutofill();
+  $('exec-vertical').value='';filterActs('exec');
+  ['exec-qty','exec-days','exec-outcome','exec-challenges'].forEach(id=>$(id).value='');
+  $('banner-unplan').style.display='block';
+}
+
+// ── Delete ─────────────────────────────────────────────────
+async function delPlan(id){
+  if(!confirm('Delete this plan?')) return;
+  plans=plans.filter(p=>p.id!==id);
+  renderPlanList();
+  const saved=await saveToBackend(true);
+  if(saved){
+    setBackendStatus('✓ Plan deleted','ok');
+  } else {
+    setBackendStatus('⚠ Deleted locally. Tap Sync Now to retry.','warn');
+  }
+  alert2('Plan deleted.','ok',2000);
+}
+async function delExec(id){
+  if(!confirm('Delete this execution?')) return;
+  executions=executions.filter(e=>e.id!==id);
+  renderExecList();
+  const saved=await saveToBackend(true);
+  if(saved){
+    setBackendStatus('✓ Execution deleted','ok');
+  } else {
+    setBackendStatus('⚠ Deleted locally. Tap Sync Now to retry.','warn');
+  }
+  alert2('Execution deleted.','ok',2000);
+}
+
+// ── Manage activities (manager only) ──────────────────────
+function toggleNewVertical(){
+  const on=$('mgr-new-vertical').checked;
+  $('mgr-vertical').style.display=on?'none':'block';
+  $('mgr-vertical-new').style.display=on?'block':'none';
+}
+function onMgrVerticalChange(){/* nothing extra needed */}
+
+async function addCustomActivity(){
+  if(!isManager()){alert2('Only managers can add activities.','err');return;}
+  const newVert=$('mgr-new-vertical').checked;
+  const vert=newVert?$('mgr-vertical-new').value.trim():$('mgr-vertical').value;
+  const name=$('mgr-act-name').value.trim();
+  const sub=$('mgr-act-sub').value.trim();
+  const unit=$('mgr-act-unit').value;
+  if(!vert||!name||!sub){alert2('Please fill vertical, activity name, and sub-activity.','err');return;}
+  const newId='ACT-'+uid();
+  ACTS.push({id:newId,vertical:vert,name,sub,unit,custom:true});
+  const saved=await saveToBackend();
+  if(saved){
+    setBackendStatus('Activity saved to backend.','ok');
+  } else {
+    setBackendStatus('Activity saved locally only. Backend save failed.','err');
+  }
+  // reset form
+  $('mgr-new-vertical').checked=false; toggleNewVertical();
+  $('mgr-vertical-new').value=''; $('mgr-act-name').value=''; $('mgr-act-sub').value='';
+  buildVerticalSelects(); filterActs('plan'); filterActs('exec');
+  renderActivityTable();
+  alert2(`✓ Activity "${name} › ${sub}" added under "${vert}".`);
+}
+
+function renderActivityTable(){
+  const fv=$('mgr-filter-vert')?$('mgr-filter-vert').value:'';
+  const list=fv?ACTS.filter(a=>a.vertical===fv):ACTS;
+  $('act-count').textContent=`(${list.length} activities)`;
+  if(!list.length){$('act-table').innerHTML=`<div class="empty">No activities.</div>`;return;}
+  $('act-table').innerHTML=`<table><thead><tr><th>Vertical</th><th>Activity</th><th>Sub-activity</th><th>Default unit</th><th>Type</th></tr></thead><tbody>`+
+    list.map(a=>`<tr>
+      <td><span class="tag">${a.vertical}</span></td>
+      <td style="font-size:12px;font-weight:500">${a.name}</td>
+      <td style="font-size:12px;color:var(--text-secondary)">${a.sub}</td>
+      <td><span class="tag">${a.unit}</span></td>
+      <td>${a.custom?`<span class="badge custom">Custom</span>`:`<span class="badge gray">Predefined</span>`}</td>
+    </tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Render plan list ───────────────────────────────────────
+function renderPlanList(){
+  const eid=$('plan-exec').value,m=$('plan-month').value,y=$('plan-year').value;
+  const ps=plans.filter(p=>p.execId==eid&&p.month==m&&p.year==y);
+  const el=$('plan-list');
+  if(!ps.length){el.innerHTML=`<div class="empty">No plans yet for this selection.</div>`;return;}
+  el.innerHTML=`<table><thead><tr><th>Activity</th><th>Quantity</th><th>Days</th><th>Notes</th><th></th></tr></thead><tbody>`+
+    ps.map(p=>`<tr><td>${actLabel(p.actId)}</td>
+      <td><b>${p.qty}</b> <span style="color:var(--text-muted);font-size:12px">${p.unit}</span></td>
+      <td>${p.days}</td>
+      <td style="color:var(--text-secondary)">${p.notes||'—'}</td>
+      <td><button class="btn sm danger" onclick="delPlan('${p.id}')">✕</button></td></tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Render exec list ───────────────────────────────────────
+function renderExecList(){
+  const eid=$('exec-exec').value,m=$('exec-month').value,y=$('exec-year').value;
+  const es=executions.filter(e=>e.execId==eid&&e.month==m&&e.year==y);
+  const el=$('exec-list');
+  if(!es.length){el.innerHTML=`<div class="empty">No executions yet for this selection.</div>`;return;}
+  el.innerHTML=`<table><thead><tr><th>Activity</th><th>Type</th><th>Quantity</th><th>Days</th><th>Outcome</th><th></th></tr></thead><tbody>`+
+    es.map(e=>`<tr class="${e.planId?'':'unrow'}">
+      <td>${actLabel(e.actId)}</td>
+      <td>${e.planId?`<span class="badge b">Planned</span>`:`<span class="badge p">Unplanned</span>`}</td>
+      <td><b>${e.qty}</b> <span style="color:var(--text-muted);font-size:12px">${e.unit}</span></td>
+      <td>${e.days}</td>
+      <td style="color:var(--text-secondary)">${e.outcome||'—'}</td>
+      <td><button class="btn sm danger" onclick="delExec('${e.id}')">✕</button></td></tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Render dashboard ───────────────────────────────────────
+function renderDashboard(){
+  const eid=$('dash-exec').value,month=$('dash-month').value,fy=$('dash-fy').value;
+  let ps=plans,es=executions;
+  if(eid){ps=ps.filter(p=>p.execId==eid);es=es.filter(e=>e.execId==eid);}
+  if(month){ps=ps.filter(p=>p.month==month);es=es.filter(e=>e.month==month);}
+  if(fy){ps=ps.filter(p=>p.fy==fy);es=es.filter(e=>e.fy==fy);}
+
+  // KPIs — only numeric units are summed; mixed units shown as count
+  const pqty=ps.reduce((s,p)=>s+(isNumeric(p.qty)?p.qty:0),0);
+  const aqty=es.reduce((s,e)=>s+(isNumeric(e.qty)?e.qty:0),0);
+  const upQty=es.filter(e=>!e.planId).reduce((s,e)=>s+(isNumeric(e.qty)?e.qty:0),0);
+  const pd=ps.reduce((s,p)=>s+p.days,0);
+  const ad=es.reduce((s,e)=>s+e.days,0);
+  const pct=pqty>0?Math.round(aqty/pqty*100):0;
+  const col=pct>=90?'g':pct>=60?'a':'r';
+
+  $('kpi-row').innerHTML=`
+    <div class="kpi"><h3>Planned qty</h3><div class="v">${pqty.toLocaleString()}</div></div>
+    <div class="kpi"><h3>Actual qty</h3><div class="v ${col}">${aqty.toLocaleString()}</div></div>
+    <div class="kpi"><h3>Achievement</h3><div class="v ${col}">${pct}%</div></div>
+    <div class="kpi"><h3>Unplanned qty</h3><div class="v p">${upQty.toLocaleString()}</div></div>
+    <div class="kpi"><h3>Planned days</h3><div class="v">${pd}</div></div>
+    <div class="kpi"><h3>Actual days</h3><div class="v">${ad}</div></div>
+  `;
+
+  // Gap table — group by actId, show unit alongside numbers
+  const byAct={};
+  ps.forEach(p=>{
+    if(!byAct[p.actId])byAct[p.actId]={actId:p.actId,plans:[],execs:[],isUp:false};
+    byAct[p.actId].plans.push(p);
+  });
+  es.forEach(e=>{
+    if(!byAct[e.actId])byAct[e.actId]={actId:e.actId,plans:[],execs:[],isUp:true};
+    byAct[e.actId].execs.push(e);
+    if(!e.planId&&byAct[e.actId].plans.length===0) byAct[e.actId].isUp=true;
+  });
+
+  const rows=Object.values(byAct).sort((a,b)=>a.isUp===b.isUp?b.plans.length-a.plans.length:a.isUp?1:-1);
+  const gt=$('gap-table');
+  if(!rows.length){gt.innerHTML=`<div class="empty">No data for this selection.</div>`;return;}
+
+  gt.innerHTML=`<table><thead><tr>
+    <th>Activity</th><th>Vertical</th><th>Type</th>
+    <th style="text-align:right">Planned</th>
+    <th style="text-align:right">Actual</th>
+    <th style="text-align:right">Gap</th>
+    <th>Achievement</th>
+  </tr></thead><tbody>`+rows.map(r=>{
+    const act=actObj(r.actId);
+    const av=actVertical(r.actId);
+
+    // aggregate per unit type within this activity
+    const allUnits=[...new Set([...r.plans.map(p=>p.unit),...r.execs.map(e=>e.unit)])];
+    const unitRows=allUnits.map(u=>{
+      const pSum=r.plans.filter(p=>p.unit===u).reduce((s,p)=>s+p.qty,0);
+      const aSum=r.execs.filter(e=>e.unit===u).reduce((s,e)=>s+e.qty,0);
+      const pct2=pSum>0?Math.round(aSum/pSum*100):null;
+      const gap=aSum-pSum;
+      const bc=pct2===null?'gray':pct2>=90?'g':pct2>=60?'a':'r';
+      const fc=pct2===null?'#9b9994':pct2>=90?'#1D9E75':pct2>=60?'#BA7517':'#E24B4A';
+      return {u,pSum,aSum,pct2,gap,bc,fc};
+    });
+
+    // first unit row merged with activity info; subsequent rows are indented
+    return unitRows.map((ur,i)=>`<tr class="${r.isUp?'unrow':''}">
+      ${i===0?`
+        <td rowspan="${unitRows.length}">
+          <div style="font-size:12px;font-weight:500">${act?act.name:r.actId}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${act?act.sub:''}</div>
+          ${act&&act.custom?`<span class="badge custom" style="margin-top:3px;font-size:10px">Custom</span>`:''}
+        </td>
+        <td rowspan="${unitRows.length}"><span class="tag">${av}</span></td>
+        <td rowspan="${unitRows.length}">${r.isUp?`<span class="badge p">Unplanned</span>`:`<span class="badge b">Planned</span>`}</td>
+      `:''}
+      <td style="text-align:right">${ur.pSum>0?`<b>${ur.pSum.toLocaleString()}</b> <span style="font-size:11px;color:var(--text-muted)">${ur.u}</span>`:'—'}</td>
+      <td style="text-align:right"><b>${ur.aSum.toLocaleString()}</b> <span style="font-size:11px;color:var(--text-muted)">${ur.u}</span></td>
+      <td style="text-align:right">${r.isUp?`<span style="color:#7c3aed">+${ur.aSum.toLocaleString()} extra</span>`:`<span style="color:${ur.gap>=0?'var(--text-success)':'var(--text-danger)'}">${ur.gap>=0?'+':''}${ur.gap.toLocaleString()} ${ur.u}</span>`}</td>
+      <td style="min-width:95px">${ur.pct2!==null?`<span class="badge ${ur.bc}">${ur.pct2}%</span><div class="pbar"><div class="pfill" style="width:${Math.min(100,ur.pct2)}%;background:${ur.fc}"></div></div>`:`<span class="badge gray">Extra work</span>`}</td>
+    </tr>`).join('');
+  }).join('')+`</tbody></table>`;
+}
+
+// ── Render all records ─────────────────────────────────────
+function renderRecords(){
+  const eid=$('rec-exec').value,month=$('rec-month').value,fy=$('rec-fy').value;
+  const el=$('records-out');
+  if(activeTab==='plans'){
+    let ps=plans;
+    if(eid)ps=ps.filter(p=>p.execId==eid);
+    if(month)ps=ps.filter(p=>p.month==month);
+    if(fy)ps=ps.filter(p=>p.fy==fy);
+    if(!ps.length){el.innerHTML=`<div class="empty">No plan records found.</div>`;return;}
+    el.innerHTML=`<table><thead><tr><th>ID</th><th>Executive</th><th>Month/FY</th><th>Activity</th><th style="text-align:right">Planned qty</th><th style="text-align:right">Days</th><th>Notes</th></tr></thead><tbody>`+
+      ps.map(p=>{const ex=exObj(p.execId);return`<tr>
+        <td style="font-size:11px;color:var(--text-muted)">${p.id}</td>
+        <td>${ex?`<div>${ex.name}</div><div style="font-size:11px;color:var(--text-muted)">${ex.branch}</div>`:p.execId}</td>
+        <td><span class="badge b">${p.month} ${p.year}</span><br><span style="font-size:11px;color:var(--text-muted)">${p.fy}</span></td>
+        <td style="font-size:12px">${actLabel(p.actId)}</td>
+        <td style="text-align:right"><b>${p.qty}</b> <span style="font-size:11px;color:var(--text-muted)">${p.unit}</span></td>
+        <td style="text-align:right">${p.days}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${p.notes||'—'}</td>
+      </tr>`}).join('')+`</tbody></table>`;
+  } else {
+    let es=executions;
+    if(eid)es=es.filter(e=>e.execId==eid);
+    if(month)es=es.filter(e=>e.month==month);
+    if(fy)es=es.filter(e=>e.fy==fy);
+    if(!es.length){el.innerHTML=`<div class="empty">No execution records found.</div>`;return;}
+    el.innerHTML=`<table><thead><tr><th>ID</th><th>Executive</th><th>Month/FY</th><th>Type</th><th>Activity</th><th style="text-align:right">Actual qty</th><th style="text-align:right">Days</th><th>Outcome</th></tr></thead><tbody>`+
+      es.map(e=>{const ex=exObj(e.execId);return`<tr class="${e.planId?'':'unrow'}">
+        <td style="font-size:11px;color:var(--text-muted)">${e.id}</td>
+        <td>${ex?`<div>${ex.name}</div><div style="font-size:11px;color:var(--text-muted)">${ex.branch}</div>`:e.execId}</td>
+        <td><span class="badge b">${e.month} ${e.year}</span><br><span style="font-size:11px;color:var(--text-muted)">${e.fy}</span></td>
+        <td>${e.planId?`<span class="badge b">Planned</span>`:`<span class="badge p">Unplanned</span>`}</td>
+        <td style="font-size:12px">${actLabel(e.actId)}</td>
+        <td style="text-align:right"><b>${e.qty}</b> <span style="font-size:11px;color:var(--text-muted)">${e.unit}</span></td>
+        <td style="text-align:right">${e.days}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${e.outcome||'—'}</td>
+      </tr>`}).join('')+`</tbody></table>`;
+  }
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
