@@ -259,6 +259,7 @@ select,input,textarea{font-size:16px}
     <div class="fg"><label>Username</label><input type="text" id="login-username" autocomplete="username" placeholder="e.g. 2222"></div>
     <div class="fg"><label>Password</label><input type="password" id="login-password" autocomplete="current-password" placeholder="Password"></div>
     <button class="btn primary" style="width:100%" id="login-btn" onclick="doLogin()">Sign in</button>
+    <p id="login-backend-version" style="font-size:10px;color:var(--text-muted);margin-top:12px;margin-bottom:0;text-align:center">Checking backend version…</p>
   </div>
 </div>
 
@@ -506,7 +507,7 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 //  CONFIG: Paste your NEW Apps Script Web App URL here
 //  (the one deployed from Code.gs against your fresh Sheet)
 // ═══════════════════════════════════════════════════════════
-const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwySXbBiC7HNjArfbGtgpyQ6s6BsQb0jrNW8hAFNYjdjsMa1MUbmIQ0guJeYuE86rXX/exec';
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzSJVtqcivntR8Ly9H8iyliJbk2Z1xfXhUs20A7REp2w3GqcSufZ8zMBEPTc8aE76WA/exec';
 
 let activeTab='plans';
 let currentUser=null; // set on login, e.g. {id,name,branch,role,username}
@@ -549,6 +550,26 @@ function setBackendStatus(msg,kind='info'){
 //  server. No more "save the whole dataset" — that was the
 //  cause of concurrent users overwriting each other's data.
 // ═══════════════════════════════════════════════════════════
+
+// Confirms the live Apps Script deployment is actually running the code
+// you think it's running — the #1 cause of "I fixed it but nothing
+// changed" is editing the script without pushing a new deployment version.
+async function checkBackendVersion(){
+  const el = $('login-backend-version');
+  if(!el) return;
+  if(!BACKEND_URL || BACKEND_URL.indexOf('PASTE_YOUR')===0){
+    el.textContent = 'Backend URL not configured.';
+    return;
+  }
+  try{
+    const res = await fetch(BACKEND_URL, {method:'GET', mode:'cors'});
+    const data = await res.json();
+    backendVersionSeen = data._backendVersion || 'unknown (older backend)';
+    el.textContent = 'Backend version: ' + backendVersionSeen;
+  }catch(e){
+    el.textContent = 'Could not reach backend to check version.';
+  }
+}
 
 async function apiCall(action, payload){
   if(!BACKEND_URL || BACKEND_URL.indexOf('PASTE_YOUR')===0){
@@ -614,6 +635,8 @@ async function doLogin(){
   }
 }
 
+let backendVersionSeen = null;
+
 async function afterLogin(){
   $('login-screen').classList.add('hidden');
   $('app-root').classList.remove('hidden');
@@ -621,7 +644,7 @@ async function afterLogin(){
   setBackendStatus('Loading your data…','info');
   const ok = await bootstrapFromBackend();
   if(ok){
-    setBackendStatus('✓ Connected. Showing '+(isManager()?'all workers\' data (Manager view)':'your data only')+'.','ok');
+    setBackendStatus('✓ Connected (backend '+(backendVersionSeen||'unknown')+'). Showing '+(isManager()?'all workers\' data (Manager view)':'your data only')+'.','ok');
   } else {
     setBackendStatus('Could not load data from the backend. Check BACKEND_URL and try Sync Now.','err');
   }
@@ -642,6 +665,7 @@ function logout(callServer){
 
 async function bootstrapFromBackend(){
   const res = await apiCall('bootstrap', {});
+  if(res && res._backendVersion) backendVersionSeen = res._backendVersion;
   if(!res.ok) return false;
   ACTS = res.acts || [];
   EXECS = res.execs || [];
@@ -729,6 +753,8 @@ async function init(){
   ['login-username','login-password'].forEach(id=>{
     $(id).addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
   });
+
+  checkBackendVersion();
 
   // Try to resume an existing session instead of showing the login form again
   const saved = loadStoredSession();
