@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>JRF Monthly Planning & Reporting</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,19 +31,19 @@
   --on-accent:#fff;
   --radius:8px;
 }
-body{font-family:var(--font-sans);font-size:14px;color:var(--text-primary);background:var(--surface-0);line-height:1.5}
+body{font-family:var(--font-sans);font-size:14px;color:var(--text-primary);background:var(--surface-0);line-height:1.5;font-weight:600}
 
 /* ===== HEADER ===== */
 .header{background:var(--surface-2);border-bottom:0.5px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:100}
 .header>div:first-child{min-width:0}
-.header>div:first-child>div:first-child{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header>div:first-child>div:first-child{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .header>div:first-child>div:last-child{font-size:11px;color:var(--text-muted)}
 
 /* ===== NAVIGATION ===== */
 .nav{display:flex;gap:3px;padding:8px 12px;border-bottom:0.5px solid var(--border);background:var(--surface-1);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
-.nav button{padding:6px 11px;border-radius:var(--radius);border:0.5px solid transparent;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);white-space:nowrap;flex-shrink:0}
-.nav button.active{background:var(--surface-2);border-color:var(--border-strong);color:var(--text-primary);font-weight:500}
+.nav button{padding:6px 11px;border-radius:var(--radius);border:0.5px solid transparent;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);white-space:nowrap;flex-shrink:0;font-weight:600}
+.nav button.active{background:var(--surface-2);border-color:var(--border-strong);color:var(--text-primary);font-weight:700}
 
 /* ===== PAGES ===== */
 .page{padding:12px 14px;display:none}
@@ -55,22 +54,22 @@ body{font-family:var(--font-sans);font-size:14px;color:var(--text-primary);backg
 @media(min-width:768px){.kgrid{grid-template-columns:repeat(6,1fr)}}
 .kpi{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center}
 .kpi h3{font-size:10px;color:var(--text-secondary);font-weight:400;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
-.kpi .v{font-size:18px;font-weight:600}
+.kpi .v{font-size:18px;font-weight:700}
 .kpi .v.g{color:var(--text-success)}.kpi .v.r{color:var(--text-danger)}.kpi .v.a{color:var(--text-warning)}.kpi .v.p{color:#7c3aed}
 
 /* ===== SECTIONS ===== */
 .section{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px}
-.stitle{font-size:14px;font-weight:600;margin-bottom:10px}
+.stitle{font-size:14px;font-weight:700;margin-bottom:10px}
 
 /* ===== FORM ROWS ===== */
 .frow{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
 @media(min-width:640px){.frow{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1024px){.frow{grid-template-columns:repeat(4,1fr)}}
 .fg{display:flex;flex-direction:column;gap:4px}
-.fg label{font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.fg label{font-size:11px;color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
 /* ===== INPUTS ===== */
-select,input,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-1);color:var(--text-primary);font-size:14px;font-family:var(--font-sans);-webkit-appearance:none;appearance:none;touch-action:manipulation}
+select,input,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-1);color:var(--text-primary);font-size:14px;font-family:var(--font-sans);-webkit-appearance:none;appearance:none;touch-action:manipulation;font-weight:600}
 select:focus,input:focus,textarea:focus{outline:none;border-color:var(--border-accent);box-shadow:0 0 0 2px rgba(37,99,235,0.1)}
 textarea{resize:vertical;min-height:58px}
 
@@ -80,23 +79,26 @@ textarea{resize:vertical;min-height:58px}
 .unit-pair select{flex:1}
 
 /* ===== BUTTONS ===== */
-.btn{padding:8px 14px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;cursor:pointer;font-size:14px;font-family:var(--font-sans);color:var(--text-primary);font-weight:500;touch-action:manipulation;min-height:40px}
+.btn{padding:8px 14px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;cursor:pointer;font-size:14px;font-family:var(--font-sans);color:var(--text-primary);font-weight:700;touch-action:manipulation;min-height:40px}
 .btn.primary{background:var(--fill-accent);color:var(--on-accent);border-color:var(--fill-accent)}
 .btn.primary:disabled{opacity:.5;cursor:not-allowed}
 .btn.sm{padding:4px 10px;font-size:12px;min-height:32px}
 .btn.danger{color:var(--text-danger);border-color:transparent}
 .btn.ghost{border-color:transparent;color:var(--text-secondary)}
+.btn.edit{color:var(--text-accent);border-color:transparent}
+.exec-count{font-size:11px;color:var(--text-muted);margin-left:4px}
+.exec-badge{display:inline-flex;align-items:center;gap:4px;background:var(--bg-accent);color:var(--text-accent);padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
 
 /* ===== TABLES ===== */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
 table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
 th{text-align:left;padding:8px 10px;font-size:11px;color:var(--text-secondary);border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;background:var(--surface-0);position:sticky;top:0}
-td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:top}
+td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:top;font-weight:600}
 tr:last-child td{border-bottom:none}
 tr.unrow{background:rgba(124,58,237,.04)}
 
 /* ===== BADGES & TAGS ===== */
-.badge{display:inline-block;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge{display:inline-block;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
 .badge.g{background:var(--bg-success);color:var(--text-success)}
 .badge.r{background:var(--bg-danger);color:var(--text-danger)}
 .badge.a{background:var(--bg-warning);color:var(--text-warning)}
@@ -104,28 +106,28 @@ tr.unrow{background:rgba(124,58,237,.04)}
 .badge.p{background:#f3e8ff;color:#7c3aed}
 .badge.gray{background:var(--surface-0);color:var(--text-muted)}
 .badge.custom{background:#fef3c7;color:#92400e}
-.tag{font-size:11px;padding:3px 8px;border-radius:100px;background:var(--surface-0);color:var(--text-muted);border:0.5px solid var(--border);white-space:nowrap}
+.tag{font-size:11px;padding:3px 8px;border-radius:100px;background:var(--surface-0);color:var(--text-muted);border:0.5px solid var(--border);white-space:nowrap;font-weight:600}
 
 /* ===== PROGRESS BAR ===== */
 .pbar{height:5px;background:var(--surface-0);border-radius:3px;overflow:hidden;margin-top:5px}
 .pfill{height:100%;border-radius:3px}
 
 /* ===== ALERTS ===== */
-.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin:6px 0;border:0.5px solid}
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin:6px 0;border:0.5px solid;font-weight:600}
 .alert.ok{background:var(--bg-success);color:var(--text-success);border-color:var(--border-success)}
 .alert.err{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
 .alert.warn{background:#f3e8ff;color:#7c3aed;border-color:#c4b5fd}
 .alert.info{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
 
 /* ===== BANNERS ===== */
-.banner{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;border:0.5px solid}
+.banner{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;border:0.5px solid;font-weight:600}
 .banner.plan{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
 .banner.unplan{background:#f3e8ff;color:#7c3aed;border-color:#c4b5fd}
 
 /* ===== TABS ===== */
 .tabs{display:flex;border-bottom:0.5px solid var(--border);margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tab{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap;flex-shrink:0}
-.tab.active{color:var(--text-accent);border-bottom-color:var(--fill-accent);font-weight:500}
+.tab{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap;flex-shrink:0;font-weight:600}
+.tab.active{color:var(--text-accent);border-bottom-color:var(--fill-accent);font-weight:700}
 
 /* ===== FILTERS ===== */
 .filt{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
@@ -137,15 +139,15 @@ tr.unrow{background:rgba(124,58,237,.04)}
 .fbox-row select{flex:1;min-width:120px}
 
 /* ===== EMPTY STATE ===== */
-.empty{text-align:center;padding:32px 20px;color:var(--text-muted);font-size:13px}
+.empty{text-align:center;padding:32px 20px;color:var(--text-muted);font-size:13px;font-weight:600}
 
 /* ===== LEGEND ===== */
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--text-secondary);align-items:center}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--text-secondary);align-items:center;font-weight:600}
 .ldot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle}
 
 /* ===== MANAGER SECTION ===== */
 .mgr-only{border:0.5px dashed var(--border-strong);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:var(--surface-0)}
-.mgr-only .mgr-label{font-size:11px;color:var(--text-accent);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.mgr-only .mgr-label{font-size:11px;color:var(--text-accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;display:flex;align-items:center;gap:5px}
 
 /* ===== AUTO FILLED ===== */
 .autofilled{border-color:var(--border-accent)!important;background:var(--bg-accent)!important}
@@ -155,25 +157,91 @@ tr.unrow{background:rgba(124,58,237,.04)}
 
 /* ===== MOBILE SPECIFIC ===== */
 @media(max-width:480px){
-  .header>div:first-child>div:first-child{font-size:13px}
-  .nav button{padding:5px 9px;font-size:11px}
-  .kpi{padding:8px 10px}
-  .kpi .v{font-size:16px}
-  .kpi h3{font-size:9px}
-  .section{padding:10px 12px}
-  .stitle{font-size:13px}
-  .btn{padding:10px 16px;font-size:15px;min-height:44px}
-  .btn.sm{padding:6px 10px;font-size:12px;min-height:36px}
-  select,input,textarea{font-size:16px;padding:10px}
-  table{font-size:12px}
-  th,td{padding:6px 8px}
-  .tbl-wrap{margin:0 -12px;padding:0 12px}
+  body{font-size:15px;font-weight:600}
+  .header{padding:13px 14px}
+  .header>div:first-child>div:first-child{font-size:16px;font-weight:800}
+  .header>div:first-child>div:last-child{font-size:12px}
+  .nav{padding:10px 12px;gap:5px}
+  .nav button{padding:7px 12px;font-size:13px;font-weight:700}
+  .kpi{padding:12px 10px}
+  .kpi .v{font-size:20px;font-weight:800}
+  .kpi h3{font-size:11px;font-weight:500}
+  .section{padding:14px 14px}
+  .stitle{font-size:15px;font-weight:800;margin-bottom:12px}
+  .fg label{font-size:12px;font-weight:700}
+  .btn{padding:12px 18px;font-size:16px;font-weight:700;min-height:48px}
+  .btn.sm{padding:8px 12px;font-size:13px;min-height:38px}
+  select,input,textarea{font-size:16px;padding:12px 12px;min-height:48px}
+  textarea{min-height:72px}
+  table{font-size:13px}
+  th,td{padding:10px 10px}
+  .tbl-wrap{margin:0 -14px;padding:0 14px}
+  .badge{padding:4px 10px;font-size:12px}
+  .tag{padding:4px 10px;font-size:12px}
+  .alert{padding:12px 14px;font-size:14px}
+  .banner{padding:12px 14px;font-size:14px}
+  .tab{padding:10px 16px;font-size:14px}
+  .legend{font-size:13px}
+  .fbox{padding:14px}
+  .empty{padding:40px 20px;font-size:14px}
+  .mgr-only{padding:14px}
+  .mgr-only .mgr-label{font-size:12px}
+  #login-badge select{font-size:13px;padding:5px 10px}
 }
 
 /* ===== TOUCH FRIENDLY ===== */
 select,input,textarea,button,.tab,.nav button{-webkit-tap-highlight-color:transparent}
 select,input,textarea{font-size:16px}
 @media(min-width:769px){select,input,textarea{font-size:14px}}
+
+/* ===== LARGE PHONES (481px–767px) ===== */
+@media(min-width:481px) and (max-width:767px){
+  body{font-size:15px;font-weight:600}
+  .header>div:first-child>div:first-child{font-size:16px}
+  .nav button{padding:7px 12px;font-size:13px}
+  .kpi .v{font-size:18px}
+  .kpi h3{font-size:11px}
+  .btn{padding:11px 16px;font-size:15px;min-height:46px}
+  select,input,textarea{padding:11px 12px;min-height:46px}
+  table{font-size:13px}
+  th,td{padding:9px 10px}
+}
+
+/* ===== REDUCED MOTION ===== */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface-1);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal-header{padding:16px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:16px;font-weight:700}
+.modal-body{padding:16px 20px}
+.modal-footer{padding:12px 20px;border-top:0.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.modal-close{background:none;border:none;font-size:22px;color:var(--text-muted);cursor:pointer;padding:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--surface-0)}
+/* ===== MOBILE MODAL ===== */
+@media(max-width:480px){
+  .modal{border-radius:12px}
+  .modal-header{padding:14px 16px}
+  .modal-body{padding:14px 16px}
+  .modal-footer{padding:10px 16px}
+}
+
+/* ===== LOGIN SCREEN ===== */
+#login-screen{position:fixed;inset:0;background:var(--surface-0);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+#login-screen.hidden{display:none}
+.login-card{background:var(--surface-1);border:0.5px solid var(--border);border-radius:14px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.login-card h2{font-size:18px;margin-bottom:2px}
+.login-card p{font-size:12px;color:var(--text-muted);margin-bottom:18px}
+.login-card .fg{margin-bottom:12px}
+.login-card label{font-size:11px;color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px}
+#login-error{font-size:12px;color:var(--text-danger);min-height:16px;margin-bottom:8px}
+#app-root.hidden{display:none}
+.user-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:0.5px solid var(--border-strong);border-radius:20px;padding:4px 6px 4px 12px}
+.user-chip button{background:none;border:none;color:var(--text-accent);font-size:11px;font-weight:700;cursor:pointer;padding:4px 8px}
 </style>
 <meta name="theme-color" content="#2563eb">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -181,14 +249,27 @@ select,input,textarea{font-size:16px}
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E📊%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-<div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h2>JRF Planning & Reporting</h2>
+    <p>Sign in with your username and password.</p>
+    <div id="login-error"></div>
+    <div class="fg"><label>Username</label><input type="text" id="login-username" autocomplete="username" placeholder="e.g. 2222"></div>
+    <div class="fg"><label>Password</label><input type="password" id="login-password" autocomplete="current-password" placeholder="Password"></div>
+    <button class="btn primary" style="width:100%" id="login-btn" onclick="doLogin()">Sign in</button>
+  </div>
+</div>
+
+<div id="app-root" class="hidden">
 <!-- header -->
 <div class="header">
   <div>
     <div style="font-size:15px;font-weight:600">JRF Monthly Planning & Reporting</div>
     <div style="font-size:11px;color:var(--text-muted)">Jaipur Rugs Foundation · Plan vs Execution Tracker</div>
   </div>
-  <div id="login-badge" style="font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:0.5px solid var(--border-strong);border-radius:20px;padding:4px 10px">Not logged in</div>
+  <div id="login-badge" class="user-chip">Not logged in</div>
 </div>
 
 <!-- nav -->
@@ -198,6 +279,7 @@ select,input,textarea{font-size:16px}
   <button onclick="showPage('execution',this)">✅ Add Execution</button>
   <button onclick="showPage('records',this)">📋 All Records</button>
   <button id="nav-manage" onclick="showPage('manage',this)" style="display:none">⚙️ Manage Activities</button>
+  <button id="nav-trash" onclick="showPage('trash',this)" style="display:none">🗑️ Trash</button>
 </div>
 
 <div id="alert-zone"></div>
@@ -262,7 +344,7 @@ select,input,textarea{font-size:16px}
         </div>
         <input type="text" id="plan-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
       </div>
-      <div class="fg"><label>Planned days *</label><input type="number" id="plan-days" placeholder="3" min="0"></div>
+      <div class="fg"><label>Planned days *</label><input type="number" id="plan-days" placeholder="3" min="0" step="0.5"></div>
     </div>
     <div class="frow">
       <div class="fg" style="grid-column:1/-1"><label>Notes / location</label>
@@ -303,7 +385,7 @@ select,input,textarea{font-size:16px}
         </div>
         <input type="text" id="exec-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
       </div>
-      <div class="fg"><label>Actual days *</label><input type="number" id="exec-days" placeholder="3" min="0"></div>
+      <div class="fg"><label>Actual days *</label><input type="number" id="exec-days" placeholder="3" min="0" step="0.5"></div>
     </div>
     <div class="frow">
       <div class="fg"><label>Outcome</label><textarea id="exec-outcome" placeholder="What was achieved…"></textarea></div>
@@ -314,7 +396,7 @@ select,input,textarea{font-size:16px}
       <button class="btn ghost" onclick="clearExecForm()">Clear</button>
     </div>
   </div>
-  <div class="section"><div class="stitle">Executions this selection</div><div class="tbl-wrap"><div id="exec-list"></div></div></div>
+  <div class="section"><div class="stitle">Executions this selection <span id="exec-summary" class="exec-count"></span></div><div class="tbl-wrap"><div id="exec-list"></div></div></div>
 </div>
 
 <!-- ALL RECORDS -->
@@ -333,6 +415,27 @@ select,input,textarea{font-size:16px}
 
 <!-- MANAGE ACTIVITIES (manager only) -->
 <div id="page-manage" class="page">
+  <div class="section">
+    <div class="stitle">👥 Team & Passwords</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Reset a worker's password if they're locked out. They can also change it themselves via the 🔑 button next to their name.</p>
+    <div id="team-table"></div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:0.5px solid var(--border)">
+      <div class="stitle" style="font-size:13px;margin-bottom:8px">+ Add new member</div>
+      <div class="frow">
+        <div class="fg"><label>ID / Username *</label><input type="text" id="new-user-id" placeholder="e.g. 4444"></div>
+        <div class="fg"><label>Full name *</label><input type="text" id="new-user-name" placeholder="e.g. Priya Sharma"></div>
+        <div class="fg"><label>Branch</label><input type="text" id="new-user-branch" placeholder="e.g. Sanganer"></div>
+        <div class="fg"><label>Role</label>
+          <select id="new-user-role"><option value="Field Executive">Field Executive</option><option value="Manager">Manager</option></select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Temporary password *</label><input type="text" id="new-user-password" placeholder="min 4 characters"></div>
+      </div>
+      <button class="btn primary" onclick="addNewUser()">+ Add member</button>
+    </div>
+  </div>
   <div class="mgr-only">
     <div class="mgr-label">⚙️ Manager controls — add new vertical or activity</div>
     <div class="frow" style="margin-bottom:10px">
@@ -370,71 +473,46 @@ select,input,textarea{font-size:16px}
     <div class="tbl-wrap"><div id="act-table"></div></div>
   </div>
 </div>
+
+<div id="page-trash" class="page">
+  <div class="section">
+    <div class="stitle">🗑️ Deleted Plans</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Only managers can see this. Restoring puts the record back into the live list.</p>
+    <div class="tbl-wrap"><div id="trash-plan-table"></div></div>
+  </div>
+  <div class="section">
+    <div class="stitle">🗑️ Deleted Executions</div>
+    <div class="tbl-wrap"><div id="trash-exec-table"></div></div>
+  </div>
+</div>
 </div>
 
 <script>
 // ── Seed data ───────────────────────────────────────────────
+// NOTE: EXECS / ACTS / plans / executions are no longer hardcoded here.
+// They are loaded per-user from the backend after a real login (see
+// doLogin() / bootstrap() below). Field Executives only ever receive
+// their own plans/executions; Managers receive everyone's.
 const UNIT_LABELS=['persons','villages','sessions','camps','trainings','applications','distributions','visits','enrolments','registrations'];
 
-let EXECS=[
-  {id:"2222",name:"Suresh CS",branch:"Dausa",role:"Field Executive"},
-  {id:"1111",name:"Ayub Sh",branch:"Shahpura",role:"Field Executive"},
-  {id:"3333",name:"Roshanlal S",branch:"Dhanota",role:"Field Executive"},
-  {id:"1526",name:"Vinod Kumar",branch:"HO Jaipur",role:"Manager"},
-];
-
-let ACTS=[
-  {id:"101",vertical:"Health Care & Wellness",name:"Menstrual Hygiene Care",sub:"Sanitary Pads Distribution with baseline",unit:"persons",custom:false},
-  {id:"102",vertical:"Health Care & Wellness",name:"Menstrual Hygiene Care",sub:"Sanitary Pads Endline data collection",unit:"persons",custom:false},
-  {id:"106",vertical:"Health Care & Wellness",name:"Organizing Health Camp",sub:"Health Camp Organized",unit:"camps",custom:false},
-  {id:"107",vertical:"Health Care & Wellness",name:"Organizing Health Camp",sub:"Follow up treatment support",unit:"persons",custom:false},
-  {id:"111",vertical:"Health Care & Wellness",name:"Vision Care & Education",sub:"Lens Kart - Eye testing by Drishti Didi",unit:"persons",custom:false},
-  {id:"113",vertical:"Health Care & Wellness",name:"Vision Care & Education",sub:"Eye Camp with Lens Kart",unit:"camps",custom:false},
-  {id:"116",vertical:"Govt Welfare Linkages",name:"Artisan Card Facilitation",sub:"Artisan Card application / data collection",unit:"applications",custom:false},
-  {id:"117",vertical:"Govt Welfare Linkages",name:"Artisan Card Facilitation",sub:"Artisan Card Distribution",unit:"persons",custom:false},
-  {id:"120",vertical:"Govt Welfare Linkages",name:"Pension Scheme Linkages",sub:"PMSYM New enrolment",unit:"enrolments",custom:false},
-  {id:"123",vertical:"Govt Welfare Linkages",name:"Financial Literacy & Inclusion",sub:"Financial Literacy training",unit:"sessions",custom:false},
-  {id:"126",vertical:"Govt Welfare Linkages",name:"Work From Home",sub:"WFH - New Registration",unit:"registrations",custom:false},
-  {id:"128",vertical:"Govt Welfare Linkages",name:"Work From Home",sub:"Doc collection for claim",unit:"persons",custom:false},
-  {id:"131",vertical:"Skill Development",name:"Skill Training",sub:"Hand Knotted",unit:"persons",custom:false},
-  {id:"133",vertical:"Skill Development",name:"Skill Training",sub:"Survey & Mobilization",unit:"villages",custom:false},
-  {id:"135",vertical:"Skill Development",name:"Skill Training",sub:"Attendance / phera / center monitoring",unit:"visits",custom:false},
-  {id:"138",vertical:"Skill Development",name:"Skill Training - Jail Project",sub:"Jail Visits for quality monitoring",unit:"visits",custom:false},
-  {id:"145",vertical:"Other",name:"Other",sub:"Filter Water Plant - Manpura / Dhanota",unit:"visits",custom:false},
-  {id:"146",vertical:"Other",name:"Other",sub:"Grassroot Talent Search",unit:"persons",custom:false},
-];
-
-let plans=[
-  {id:"PLN001",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:3,unit:"camps",days:6,notes:"Kushalpura, Ramgarh, Deedwana"},
-  {id:"PLN002",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"111",qty:1500,unit:"persons",days:4,notes:"Aluda & Ladali ka bas"},
-  {id:"PLN003",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"120",qty:10,unit:"enrolments",days:7,notes:"PMSYM"},
-  {id:"PLN004",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"126",qty:15,unit:"registrations",days:3,notes:""},
-  {id:"PLN005",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:2,unit:"camps",days:4,notes:"Shahpura"},
-  {id:"PLN006",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"113",qty:800,unit:"persons",days:5,notes:"Lenskart eye camp"},
-];
-let executions=[
-  {id:"EXC001",planId:"PLN001",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:3,unit:"camps",days:6,outcome:"3 camps, OPD: 511",challenges:"Connectivity"},
-  {id:"EXC002",planId:"PLN002",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"111",qty:1573,unit:"persons",days:4,outcome:"1573 tests done",challenges:"None"},
-  {id:"EXC003",planId:"PLN003",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"120",qty:8,unit:"enrolments",days:5,outcome:"8 enrolled",challenges:"OTP issue"},
-  // unplanned
-  {id:"EXC009",planId:"",execId:"2222",month:"Jul",year:"2025",fy:"FY25-26",actId:"116",qty:45,unit:"applications",days:2,outcome:"45 artisan card applications collected",challenges:"None"},
-  {id:"EXC005",planId:"PLN005",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"106",qty:2,unit:"camps",days:4,outcome:"2 camps, OPD: 240",challenges:"Rain"},
-  {id:"EXC006",planId:"PLN006",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"113",qty:850,unit:"persons",days:5,outcome:"850 tests done",challenges:"None"},
-  {id:"EXC010",planId:"",execId:"1111",month:"Jul",year:"2025",fy:"FY25-26",actId:"123",qty:1,unit:"sessions",days:1,outcome:"Financial literacy session, 30 weavers",challenges:"None"},
-];
+let EXECS=[];
+let ACTS=[];
+let plans=[];
+let executions=[];
 
 const ALL_FYS=['FY24-25','FY25-26','FY26-27'];
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // ═══════════════════════════════════════════════════════════
-//  CONFIG: Paste your Google Apps Script Web App URL here
-//  This URL is shared with all users — no one needs to paste it
+//  CONFIG: Paste your NEW Apps Script Web App URL here
+//  (the one deployed from Code.gs against your fresh Sheet)
 // ═══════════════════════════════════════════════════════════
-const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwyxw96a_SxSWsg_euu6bF9J25jgB5_vXGcxzdOJHciCvx1urkLDsePHlWsC07V1eCu/exec';
-// Example: 'https://script.google.com/macros/s/AKfycbx.../exec'
+const BACKEND_URL = 'PASTE_YOUR_NEW_APPS_SCRIPT_URL_HERE';
 
 let activeTab='plans';
-let currentUser=null; // set on login
+let currentUser=null; // set on login, e.g. {id,name,branch,role,username}
+let authToken=null;
 let syncInFlight=false;
+let editingExecId=null; // track which execution is being edited
 
 // ── Helpers ────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
@@ -466,166 +544,136 @@ function setBackendStatus(msg,kind='info'){
 // No user input needed. Just share the HTML file.
 
 // ═══════════════════════════════════════════════════════════
-//  OPTIMIZED BACKEND API CALLS
-//  • Request caching for faster repeated loads
-//  • Debounced auto-save (waits 2s after last change)
-//  • Offline queue for failed saves
-//  • Optimized JSON parsing
+//  AUTH + PER-RECORD BACKEND API CALLS
+//  Every add/edit/delete now touches exactly one row on the
+//  server. No more "save the whole dataset" — that was the
+//  cause of concurrent users overwriting each other's data.
 // ═══════════════════════════════════════════════════════════
 
-let cacheTimestamp = 0;
-let cacheData = null;
-let saveTimeout = null;
-let pendingChanges = false;
-const CACHE_TTL = 30000; // 30 seconds cache
-
-async function loadFromBackend(force=false){
-  if(!BACKEND_URL){return false;}
-
-  // Use cache if available and not expired (unless force refresh)
-  if(!force && cacheData && (Date.now() - cacheTimestamp) < CACHE_TTL){
-    applyBackendData(cacheData);
-    return true;
+async function apiCall(action, payload){
+  if(!BACKEND_URL || BACKEND_URL.indexOf('PASTE_YOUR')===0){
+    alert2('Backend URL not configured yet. See BACKEND_URL near the top of the script.','err',6000);
+    return {ok:false, error:'Backend not configured'};
   }
-
   try{
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
-
-    const res=await fetch(BACKEND_URL,{
-      method:'GET',
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const res = await fetch(BACKEND_URL,{
+      method:'POST',
       mode:'cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(Object.assign({action, token: authToken}, payload || {})),
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-
-    if(!res.ok) return false;
-
     let data=null;
-    try{data=await res.json();}catch(e){
-      try{data=JSON.parse(await res.text());}catch(err){data=null;}
+    try{ data = await res.json(); } catch(e){ try{ data = JSON.parse(await res.text()); } catch(err){ data=null; } }
+    if(!data){ return {ok:false, error:'No response from server.'}; }
+    if(data.ok===false && data.error==='Not logged in. Please log in again.'){
+      // Session expired — send back to login.
+      logout(false);
     }
-
-    if(data){
-      // Cache the response
-      cacheData = data;
-      cacheTimestamp = Date.now();
-
-      if(Array.isArray(data.EXECS)) EXECS=data.EXECS;
-      if(Array.isArray(data.ACTS)) ACTS=data.ACTS;
-      if(Array.isArray(data.plans)) plans=data.plans;
-      if(Array.isArray(data.executions)) executions=data.executions;
-      if(data.state){
-        if(Array.isArray(data.state.EXECS)) EXECS=data.state.EXECS;
-        if(Array.isArray(data.state.ACTS)) ACTS=data.state.ACTS;
-        if(Array.isArray(data.state.plans)) plans=data.state.plans;
-        if(Array.isArray(data.state.executions)) executions=data.state.executions;
-      }
-      return true;
-    }
+    return data;
   }catch(e){
-    if(e.name === 'AbortError'){
-      console.warn('Backend load timed out');
-      setBackendStatus('⚠ Connection slow. Retrying...','warn');
-    } else {
-      console.warn('Backend load failed',e);
-    }
+    if(e.name==='AbortError') return {ok:false, error:'Request timed out.'};
+    return {ok:false, error:'Network error: '+e.message};
   }
-  return false;
 }
 
-async function saveToBackend(immediate=false){
-  if(!BACKEND_URL) return false;
+// ── Login / session ──────────────────────────────────────────
+function loadStoredSession(){
+  try{
+    const raw = localStorage.getItem('jrf_session');
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function storeSession(token, user){
+  try{ localStorage.setItem('jrf_session', JSON.stringify({token, user})); }catch(e){}
+}
+function clearStoredSession(){
+  try{ localStorage.removeItem('jrf_session'); }catch(e){}
+}
 
-  // Debounce: if not immediate, wait 2 seconds after last change
-  if(!immediate && saveTimeout){
-    clearTimeout(saveTimeout);
-    pendingChanges = true;
-  }
-
-  const doSave = async () => {
-    if(syncInFlight) return false;
-    syncInFlight=true;
-    pendingChanges = false;
-    try{
-      const payload={state:{EXECS,ACTS,plans,executions}};
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-      const res=await fetch(BACKEND_URL,{
-        method:'POST',
-        mode:'cors',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify(payload),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-
-      if(!res.ok){
-        console.warn('Backend save failed',res.status,res.statusText);
-        return false;
-      }
-
-      let data=null;
-      try{data=await res.json();}catch(_){}
-
-      if(data && data.state){
-        cacheData = data;
-        cacheTimestamp = Date.now();
-        if(Array.isArray(data.state.EXECS)) EXECS=data.state.EXECS;
-        if(Array.isArray(data.state.ACTS)) ACTS=data.state.ACTS;
-        if(Array.isArray(data.state.plans)) plans=data.state.plans;
-        if(Array.isArray(data.state.executions)) executions=data.state.executions;
-      }
-      return true;
-    }catch(e){
-      if(e.name === 'AbortError'){
-        console.warn('Backend save timed out');
-      } else {
-        console.warn('Backend save failed',e);
-      }
-      return false;
-    } finally {
-      syncInFlight=false;
-      saveTimeout = null;
-    }
-  };
-
-  if(immediate){
-    return await doSave();
+async function doLogin(){
+  const username = $('login-username').value.trim();
+  const password = $('login-password').value;
+  const errEl = $('login-error');
+  errEl.textContent='';
+  if(!username || !password){ errEl.textContent='Please enter username and password.'; return; }
+  $('login-btn').disabled = true; $('login-btn').textContent='Signing in…';
+  const res = await apiCall('login', {username, password});
+  $('login-btn').disabled = false; $('login-btn').textContent='Sign in';
+  if(res.ok){
+    authToken = res.token;
+    currentUser = res.user;
+    storeSession(authToken, currentUser);
+    await afterLogin();
   } else {
-    saveTimeout = setTimeout(doSave, 2000);
-    return true; // Return true immediately, save happens in background
+    errEl.textContent = res.error || 'Login failed.';
   }
 }
 
-// Auto-save trigger (debounced)
-function triggerAutoSave(){
-  pendingChanges = true;
-  setBackendStatus('💾 Saving...','info');
-  saveToBackend(false).then(saved => {
-    if(saved && !pendingChanges){
-      setBackendStatus('✓ All changes saved','ok');
-    }
-  });
+async function afterLogin(){
+  $('login-screen').classList.add('hidden');
+  $('app-root').classList.remove('hidden');
+  updateLoginBadge();
+  setBackendStatus('Loading your data…','info');
+  const ok = await bootstrapFromBackend();
+  if(ok){
+    setBackendStatus('✓ Connected. Showing '+(isManager()?'all workers\' data (Manager view)':'your data only')+'.','ok');
+  } else {
+    setBackendStatus('Could not load data from the backend. Check BACKEND_URL and try Sync Now.','err');
+  }
+  $('nav-manage').style.display = isManager()?'':'none';
+  $('nav-trash').style.display = isManager()?'':'none';
+  refreshSelectors();
+  renderDashboard();
+}
+
+function logout(callServer){
+  if(callServer!==false && authToken){ apiCall('logout', {}); }
+  authToken=null; currentUser=null; EXECS=[]; ACTS=[]; plans=[]; executions=[];
+  clearStoredSession();
+  $('app-root').classList.add('hidden');
+  $('login-screen').classList.remove('hidden');
+  $('login-username').value=''; $('login-password').value='';
+}
+
+async function bootstrapFromBackend(){
+  const res = await apiCall('bootstrap', {});
+  if(!res.ok) return false;
+  ACTS = res.acts || [];
+  EXECS = res.execs || [];
+  plans = res.plans || [];
+  executions = res.executions || [];
+  return true;
 }
 
 async function syncFromBackend(){
-  if(!BACKEND_URL || BACKEND_URL === 'PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE') return;
-  setBackendStatus('Syncing from backend…','info');
+  setBackendStatus('Syncing…','info');
   $('sync-btn').disabled = true;
-  const ok = await loadFromBackend();
+  const ok = await bootstrapFromBackend();
   $('sync-btn').disabled = false;
   if(ok){
     refreshSelectors();
     renderDashboard();
-    setBackendStatus('✓ Sync complete. Data refreshed from Google Sheet.','ok');
+    setBackendStatus('✓ Sync complete.','ok');
     alert2('Sync complete!','ok',2000);
   } else {
-    setBackendStatus('✗ Sync failed. Check console for details.','err');
+    setBackendStatus('✗ Sync failed.','err');
   }
 }
 
+async function changeOwnPassword(){
+  const oldPassword = prompt('Enter your current password:');
+  if(oldPassword===null) return;
+  const newPassword = prompt('Enter your new password (min 4 characters):');
+  if(newPassword===null) return;
+  const res = await apiCall('changePassword', {oldPassword, newPassword});
+  if(res.ok){ alert2('✓ Password changed.','ok',3000); }
+  else { alert2(res.error||'Could not change password.','err',4000); }
+}
 
 // ── Unit pair toggle ───────────────────────────────────────
 function wireUnitPair(prefix){
@@ -666,80 +714,62 @@ function setUnit(prefix,unit){
 
 // ── Init ───────────────────────────────────────────────────
 async function init(){
-  // default "login" — pick first exec to simulate multi-user
-  currentUser=EXECS[0];
-  updateLoginBadge();
-
   const years=[2024,2025,2026,2027];
-  ['plan-year','exec-year'].forEach(id=>{
+  ['plan-year','exec-year','edit-year'].forEach(id=>{
     $(id).innerHTML=years.map(y=>`<option${y===curYear()?' selected':''}>${y}</option>`).join('');
   });
   ['plan-month','exec-month'].forEach(id=>{try{$(id).value=curMonth();}catch(e){}});
 
-  wireUnitPair('plan'); wireUnitPair('exec');
-  buildVerticalSelects();
-  filterActs('plan'); filterActs('exec');
+  wireUnitPair('plan'); wireUnitPair('exec'); wireUnitPair('edit');
 
-  const execOpts=EXECS.map(e=>`<option value="${e.id}">${e.name} (${e.branch})</option>`).join('');
-  ['plan-exec','exec-exec'].forEach(id=>$(id).innerHTML=execOpts);
-
-  // user selector in header
-  const sel=document.createElement('select');
-  sel.style.cssText='font-size:12px;padding:3px 8px;border-radius:20px;border:0.5px solid var(--border-strong);background:var(--surface-1);color:var(--text-primary);cursor:pointer;margin-left:8px';
-  sel.innerHTML=EXECS.map(e=>`<option value="${e.id}">${e.name} — ${e.role}</option>`).join('');
-  sel.addEventListener('change',function(){
-    currentUser=exObj(this.value);
-    updateLoginBadge();
-    $('nav-manage').style.display=isManager()?'':'none';
-    buildVerticalSelects(); filterActs('plan'); filterActs('exec');
-  });
-  const badge=$('login-badge');
-  if(badge){badge.innerHTML=''; badge.appendChild(sel);} 
-
-  ['dash-exec','rec-exec'].forEach(id=>{
-    $(id).innerHTML=`<option value="">— All executives —</option>`+EXECS.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
-  });
   ['dash-fy','rec-fy'].forEach(id=>$(id).innerHTML=`<option value="">All FYs</option>`+ALL_FYS.map(f=>`<option>${f}</option>`).join(''));
   ['dash-month','rec-month'].forEach(id=>$(id).innerHTML=`<option value="">All months</option>`+MONTHS.map(m=>`<option>${m}</option>`).join(''));
 
-  $('nav-manage').style.display=isManager()?'':'none';
-  if(BACKEND_URL){
-    setBackendStatus('Loading from backend…','info');
-    const ok=await loadFromBackend();
-    if(ok){
-      refreshSelectors();
-      setBackendStatus('Connected to Google Sheet backend.','ok');
-    } else {
-      setBackendStatus('Could not reach the backend URL. Make sure the Apps Script deployment is published and set to "Anyone" access.','err');
-    }
+  // Enter key submits the login form
+  ['login-username','login-password'].forEach(id=>{
+    $(id).addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  });
+
+  // Try to resume an existing session instead of showing the login form again
+  const saved = loadStoredSession();
+  if(saved && saved.token && saved.user){
+    authToken = saved.token;
+    currentUser = saved.user;
+    await afterLogin();
   } else {
-    setBackendStatus('Not configured yet. Paste the Apps Script URL and save it.','info');
+    $('login-screen').classList.remove('hidden');
+    $('app-root').classList.add('hidden');
   }
-  renderDashboard();
 }
 
 function updateLoginBadge(){
-  // badge is now the select — no textContent needed
+  const badge=$('login-badge');
+  if(!badge || !currentUser) return;
+  badge.innerHTML = `<span>${currentUser.name} — ${currentUser.role}</span>`+
+    `<button onclick="changeOwnPassword()" title="Change password">🔑</button>`+
+    `<button onclick="logout()" title="Log out">Log out</button>`;
 }
 
 function refreshSelectors(){
-  const execOpts=EXECS.map(e=>`<option value="${e.id}">${e.name} (${e.branch})</option>`).join('');
-  ['plan-exec','exec-exec'].forEach(id=>{const el=$(id); if(el) el.innerHTML=execOpts;});
-  ['dash-exec','rec-exec'].forEach(id=>{const el=$(id); if(el) el.innerHTML=`<option value="">— All executives —</option>`+EXECS.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');});
-  const loginWrapper=$('login-badge');
-  if(loginWrapper){
-    const sel=loginWrapper.querySelector('select');
-    if(sel){
-      sel.innerHTML=EXECS.map(e=>`<option value="${e.id}">${e.name} — ${e.role}</option>`).join('');
-      sel.value=(currentUser||EXECS[0])?.id||'';
-    }
-  }
+  // Plan/Execution forms: only the logged-in worker (Managers can still
+  // record entries for themselves; they don't file plans "as" someone else).
+  const execOpts = isManager()
+    ? EXECS.map(e=>`<option value="${e.id}">${e.name} (${e.branch})</option>`).join('')
+    : `<option value="${currentUser.id}">${currentUser.name} (${currentUser.branch||''})</option>`;
+  ['plan-exec','exec-exec','edit-exec'].forEach(id=>{const el=$(id); if(el){ el.innerHTML=execOpts; el.value=currentUser.id; }});
+
+  // Dashboard / Records filters: Managers can filter by any worker; workers only see themselves.
+  const filterOpts = isManager()
+    ? `<option value="">— All executives —</option>`+EXECS.map(e=>`<option value="${e.id}">${e.name}</option>`).join('')
+    : `<option value="${currentUser.id}">${currentUser.name}</option>`;
+  ['dash-exec','rec-exec'].forEach(id=>{const el=$(id); if(el){ el.innerHTML=filterOpts; if(!isManager()) el.value=currentUser.id; }});
+
   buildVerticalSelects(); filterActs('plan'); filterActs('exec');
 }
 
 function buildVerticalSelects(){
   const verts=[...new Set(ACTS.map(a=>a.vertical))];
-  ['plan-vertical','exec-vertical','mgr-filter-vert'].forEach(id=>{
+  ['plan-vertical','exec-vertical','mgr-filter-vert','edit-vertical'].forEach(id=>{
     const el=$(id); if(!el) return;
     const cur=el.value;
     el.innerHTML=`<option value="">All verticals</option>`+verts.map(v=>`<option>${v}</option>`).join('');
@@ -764,7 +794,7 @@ function filterActs(pfx){
 
 document.addEventListener('change',function(e){
   const target=e.target;
-  if(target && (target.id==='plan-activity'||target.id==='exec-activity')){
+  if(target && (target.id==='plan-activity'||target.id==='exec-activity'||target.id==='edit-activity')){
     const pfx=target.id.split('-')[0];
     const act=actObj(target.value);
     if(act) setUnit(pfx,act.unit||'persons');
@@ -780,7 +810,8 @@ function showPage(name,btn){
   if(name==='plan') renderPlanList();
   if(name==='execution'){rebuildPlanLinks();renderExecList();}
   if(name==='records') renderRecords();
-  if(name==='manage'){buildVerticalSelects();renderActivityTable();}
+  if(name==='manage'){buildVerticalSelects();renderActivityTable();renderTeamTable();}
+  if(name==='trash'){renderTrash();}
 }
 function switchTab(tab,el){
   activeTab=tab;
@@ -827,7 +858,26 @@ function clearExecAutofill(){
 }
 
 // ── Submit plan ────────────────────────────────────────────
-async function submitPlan(){
+// ── Prevents duplicate saves from a fast double-click/double-tap ──
+// (this was creating two separate rows with different IDs for the
+// same entry, which is why a "deleted" plan could appear to come back)
+const _busyButtons = new Set();
+async function withButtonGuard(buttonId, fn){
+  if(_busyButtons.has(buttonId)) return; // ignore rapid repeat clicks
+  _busyButtons.add(buttonId);
+  const btn = $(buttonId);
+  const originalText = btn ? btn.textContent : null;
+  if(btn){ btn.disabled = true; }
+  try{
+    await fn();
+  } finally {
+    _busyButtons.delete(buttonId);
+    if(btn){ btn.disabled = false; if(originalText!==null) btn.textContent = originalText; }
+  }
+}
+
+async function submitPlan(){ return withButtonGuard('plan-btn', _submitPlan); }
+async function _submitPlan(){
   const execId=$('plan-exec').value,month=$('plan-month').value,year=$('plan-year').value;
   const fy=$('plan-fy').value,actId=$('plan-activity').value;
   const qty=parseFloat($('plan-qty').value);
@@ -836,25 +886,23 @@ async function submitPlan(){
   const notes=$('plan-notes').value;
   if(!execId||!actId||isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
 
-  // Add to local data immediately for instant UI feedback
-  plans.push({id:'PLN-'+uid(),execId,month,year,fy,actId,qty,unit,days,notes});
-  clearPlanForm(); renderPlanList();
-
-  // Save immediately (user is waiting for confirmation)
   setBackendStatus('💾 Saving to Google Sheet...','info');
-  const saved=await saveToBackend(true);
-  if(saved){
+  const res = await apiCall('addPlan', {plan:{execId,month,year,fy,actId,qty,unit,days,notes}});
+  if(res.ok){
+    plans.push(res.plan);
+    clearPlanForm(); renderPlanList();
     setBackendStatus('✓ Plan saved to Google Sheet','ok');
     alert2('✓ Plan entry added!','ok',2000);
   } else {
-    setBackendStatus('⚠ Saved locally. Tap 🔄 Sync Now to retry.','warn');
-    alert2('⚠ Saved locally. Tap Sync Now to retry.','warn',5000);
+    setBackendStatus('✗ Save failed.','err');
+    alert2(res.error||'Could not save the plan.','err',5000);
   }
 }
 function clearPlanForm(){['plan-qty','plan-days','plan-notes'].forEach(id=>$(id).value='');}
 
 // ── Submit execution ───────────────────────────────────────
-async function submitExecution(){
+async function submitExecution(){ return withButtonGuard('exec-btn', _submitExecution); }
+async function _submitExecution(){
   const execId=$('exec-exec').value,month=$('exec-month').value,year=$('exec-year').value;
   const actId=$('exec-activity').value;
   const qty=parseFloat($('exec-qty').value);
@@ -866,19 +914,16 @@ async function submitExecution(){
   const planRec=planId?plans.find(p=>p.id==planId):null;
   const fy=planRec?planRec.fy:'FY26-27';
 
-  // Add to local data immediately for instant UI feedback
-  executions.push({id:'EXC-'+uid(),planId,execId,month,year,fy,actId,qty,unit,days,outcome,challenges});
-  clearExecForm(); renderExecList();
-
-  // Save immediately
   setBackendStatus('💾 Saving to Google Sheet...','info');
-  const saved=await saveToBackend(true);
-  if(saved){
+  const res = await apiCall('addExecution', {execution:{planId,execId,month,year,fy,actId,qty,unit,days,outcome,challenges}});
+  if(res.ok){
+    executions.push(res.execution);
+    clearExecForm(); renderExecList();
     setBackendStatus('✓ Execution saved to Google Sheet','ok');
     alert2(planId?'✓ Execution submitted!':'⚡ Unplanned execution submitted!', planId?'ok':'warn',2000);
   } else {
-    setBackendStatus('⚠ Saved locally. Tap 🔄 Sync Now to retry.','warn');
-    alert2('⚠ Saved locally. Tap Sync Now to retry.','warn',5000);
+    setBackendStatus('✗ Save failed.','err');
+    alert2(res.error||'Could not save the execution.','err',5000);
   }
 }
 function clearExecForm(){
@@ -888,30 +933,173 @@ function clearExecForm(){
   $('banner-unplan').style.display='block';
 }
 
+
+// ── EDIT EXECUTION ────────────────────────────────────────
+function openEditModal(execId){
+  const ex = executions.find(e => e.id === execId);
+  if(!ex) return;
+  editingExecId = execId;
+
+  // Populate modal fields
+  $('edit-id').value = ex.id;
+  $('edit-exec').value = ex.execId;
+  $('edit-month').value = ex.month;
+  $('edit-year').value = ex.year;
+
+  // Rebuild plan links for edit modal
+  const ps=plans.filter(p=>p.execId==ex.execId&&p.month==ex.month&&p.year==ex.year);
+  $('edit-planid').innerHTML=`<option value="">— No plan (unplanned) —</option>`+
+    ps.map(p=>`<option value="${p.id}">${actLabel(p.actId)} · ${qtyLabel(p.qty,p.unit)} / ${p.days} days</option>`).join('');
+  $('edit-planid').value = ex.planId || '';
+
+  // Set activity and vertical
+  const vert = actVertical(ex.actId);
+  $('edit-vertical').value = vert;
+  filterActs('edit');
+  $('edit-activity').value = ex.actId;
+
+  $('edit-qty').value = ex.qty;
+  setUnit('edit', ex.unit);
+  $('edit-days').value = ex.days;
+  $('edit-outcome').value = ex.outcome || '';
+  $('edit-challenges').value = ex.challenges || '';
+
+  $('edit-modal').classList.add('active');
+}
+
+function closeEditModal(){
+  $('edit-modal').classList.remove('active');
+  editingExecId = null;
+}
+
+async function saveEditExecution(){
+  if(!editingExecId) return;
+
+  const qty=parseFloat($('edit-qty').value);
+  const unit=getUnit('edit');
+  const days=parseFloat($('edit-days').value);
+  const outcome=$('edit-outcome').value;
+  const challenges=$('edit-challenges').value;
+  const actId=$('edit-activity').value;
+
+  if(isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
+
+  const idx = executions.findIndex(e => e.id === editingExecId);
+  if(idx === -1) return;
+
+  setBackendStatus('💾 Saving changes to Google Sheet...','info');
+  const res = await apiCall('updateExecution', {id:editingExecId, patch:{actId, qty, unit, days, outcome, challenges}});
+  if(res.ok){
+    executions[idx] = res.execution;
+    closeEditModal();
+    renderExecList();
+    renderDashboard();
+    setBackendStatus('✓ Changes saved to Google Sheet','ok');
+    alert2('✓ Execution updated!','ok',2000);
+  } else {
+    setBackendStatus('✗ Save failed.','err');
+    alert2(res.error||'Could not save changes.','err',5000);
+  }
+}
+
 // ── Delete ─────────────────────────────────────────────────
 async function delPlan(id){
-  if(!confirm('Delete this plan?')) return;
-  plans=plans.filter(p=>p.id!==id);
-  renderPlanList();
-  const saved=await saveToBackend(true);
-  if(saved){
-    setBackendStatus('✓ Plan deleted','ok');
+  if(!confirm("कृपया पुनः जांच लें, ये आपका रिकॉर्ड है और आप इसे डिलीट करना चाहते हैं!")) return;
+  const res = await apiCall('deletePlan', {id});
+  if(res.ok){
+    plans=plans.filter(p=>p.id!==id);
+    renderPlanList();
+    setBackendStatus('✓ Plan deleted (recoverable by a manager from Trash)','ok');
+    alert2('Plan deleted.','ok',2000);
   } else {
-    setBackendStatus('⚠ Deleted locally. Tap Sync Now to retry.','warn');
+    setBackendStatus('✗ Delete failed.','err');
+    alert2(res.error||'Could not delete the plan.','err',4000);
   }
-  alert2('Plan deleted.','ok',2000);
 }
 async function delExec(id){
-  if(!confirm('Delete this execution?')) return;
-  executions=executions.filter(e=>e.id!==id);
-  renderExecList();
-  const saved=await saveToBackend(true);
-  if(saved){
-    setBackendStatus('✓ Execution deleted','ok');
+  if(!confirm("कृपया पुनः जांच लें, ये आपका रिकॉर्ड है और आप इसे डिलीट करना चाहते हैं!")) return;
+  const res = await apiCall('deleteExecution', {id});
+  if(res.ok){
+    executions=executions.filter(e=>e.id!==id);
+    renderExecList();
+    renderDashboard();
+    setBackendStatus('✓ Execution deleted (recoverable by a manager from Trash)','ok');
+    alert2('Execution deleted.','ok',2000);
   } else {
-    setBackendStatus('⚠ Deleted locally. Tap Sync Now to retry.','warn');
+    setBackendStatus('✗ Delete failed.','err');
+    alert2(res.error||'Could not delete the execution.','err',4000);
   }
-  alert2('Execution deleted.','ok',2000);
+}
+
+// ── Trash (manager only) — view + restore soft-deleted records ─────
+async function renderTrash(){
+  if(!isManager()){
+    $('trash-plan-table').innerHTML='<p style="font-size:13px;color:var(--text-muted)">Managers only.</p>';
+    $('trash-exec-table').innerHTML='';
+    return;
+  }
+  $('trash-plan-table').innerHTML='<p style="font-size:13px;color:var(--text-muted)">Loading…</p>';
+  $('trash-exec-table').innerHTML='';
+  const res = await apiCall('listTrash', {});
+  if(!res.ok){
+    $('trash-plan-table').innerHTML=`<p style="font-size:13px;color:var(--text-danger)">${res.error||'Could not load trash.'}</p>`;
+    return;
+  }
+  const execName=id=>{const e=EXECS.find(x=>x.id===id); return e?e.name:id;};
+
+  $('trash-plan-table').innerHTML = res.plans.length ? `<table><tr><th>Worker</th><th>Month</th><th>Activity</th><th>Qty</th><th>Deleted by</th><th>Deleted at</th><th></th><th></th></tr>`+
+    res.plans.map(p=>`<tr><td>${execName(p.execId)}</td><td>${p.month} ${p.year}</td><td>${actLabel(p.actId)}</td><td>${qtyLabel(p.qty,p.unit)}</td><td>${execName(p.deletedBy)}</td><td>${p.deletedAt?new Date(Number(p.deletedAt)).toLocaleString():''}</td><td><button class="btn sm" onclick="restorePlan('${p.id}')">↩ Restore</button></td><td><button class="btn sm danger" onclick="permanentlyDeletePlan('${p.id}')">⛔ Delete Forever</button></td></tr>`).join('')+`</table>`
+    : `<p style="font-size:13px;color:var(--text-muted)">No deleted plans.</p>`;
+
+  $('trash-exec-table').innerHTML = res.executions.length ? `<table><tr><th>Worker</th><th>Month</th><th>Activity</th><th>Qty</th><th>Deleted by</th><th>Deleted at</th><th></th><th></th></tr>`+
+    res.executions.map(x=>`<tr><td>${execName(x.execId)}</td><td>${x.month} ${x.year}</td><td>${actLabel(x.actId)}</td><td>${qtyLabel(x.qty,x.unit)}</td><td>${execName(x.deletedBy)}</td><td>${x.deletedAt?new Date(Number(x.deletedAt)).toLocaleString():''}</td><td><button class="btn sm" onclick="restoreExec('${x.id}')">↩ Restore</button></td><td><button class="btn sm danger" onclick="permanentlyDeleteExec('${x.id}')">⛔ Delete Forever</button></td></tr>`).join('')+`</table>`
+    : `<p style="font-size:13px;color:var(--text-muted)">No deleted executions.</p>`;
+
+  if(res._debug){
+    const dbg=$('trash-debug') || (() => {
+      const d=document.createElement('div');
+      d.id='trash-debug';
+      d.style.cssText='margin-top:14px;padding:10px;background:var(--surface-2,#f5f5f5);border-radius:8px;font-size:11px;color:var(--text-muted);font-family:monospace;white-space:pre-wrap';
+      $('trash-plan-table').parentNode.appendChild(d);
+      return d;
+    })();
+    dbg.textContent = `Debug — total plan rows in Sheet: ${res._debug.totalPlanRows}, total execution rows: ${res._debug.totalExecutionRows}\n`+
+      `"deleted" values seen in Plans sheet: ${JSON.stringify(res._debug.planDeletedValues)}`;
+  }
+}
+
+async function restorePlan(id){
+  const res = await apiCall('restorePlan', {id});
+  if(res.ok){
+    plans.push(res.plan);
+    alert2('✓ Plan restored.','ok',2500);
+    renderTrash(); renderPlanList();
+  } else {
+    alert2(res.error||'Could not restore.','err',4000);
+  }
+}
+async function restoreExec(id){
+  const res = await apiCall('restoreExecution', {id});
+  if(res.ok){
+    executions.push(res.execution);
+    alert2('✓ Execution restored.','ok',2500);
+    renderTrash(); renderExecList(); renderDashboard();
+  } else {
+    alert2(res.error||'Could not restore.','err',4000);
+  }
+}
+
+async function permanentlyDeletePlan(id){
+  if(!confirm('This will permanently erase this plan. It cannot be undone or recovered. Continue?')) return;
+  const res = await apiCall('permanentlyDeletePlan', {id});
+  if(res.ok){ alert2('Plan permanently deleted.','ok',2500); renderTrash(); }
+  else { alert2(res.error||'Could not delete.','err',4000); }
+}
+async function permanentlyDeleteExec(id){
+  if(!confirm('This will permanently erase this execution. It cannot be undone or recovered. Continue?')) return;
+  const res = await apiCall('permanentlyDeleteExecution', {id});
+  if(res.ok){ alert2('Execution permanently deleted.','ok',2500); renderTrash(); }
+  else { alert2(res.error||'Could not delete.','err',4000); }
 }
 
 // ── Manage activities (manager only) ──────────────────────
@@ -930,20 +1118,62 @@ async function addCustomActivity(){
   const sub=$('mgr-act-sub').value.trim();
   const unit=$('mgr-act-unit').value;
   if(!vert||!name||!sub){alert2('Please fill vertical, activity name, and sub-activity.','err');return;}
-  const newId='ACT-'+uid();
-  ACTS.push({id:newId,vertical:vert,name,sub,unit,custom:true});
-  const saved=await saveToBackend();
-  if(saved){
-    setBackendStatus('Activity saved to backend.','ok');
-  } else {
-    setBackendStatus('Activity saved locally only. Backend save failed.','err');
+  const res = await apiCall('addActivity', {activity:{vertical:vert,name,sub,unit}});
+  if(!res.ok){
+    setBackendStatus('✗ Could not save activity.','err');
+    alert2(res.error||'Could not save the activity.','err',4000);
+    return;
   }
+  ACTS.push(res.activity);
+  setBackendStatus('Activity saved to backend.','ok');
   // reset form
   $('mgr-new-vertical').checked=false; toggleNewVertical();
   $('mgr-vertical-new').value=''; $('mgr-act-name').value=''; $('mgr-act-sub').value='';
   buildVerticalSelects(); filterActs('plan'); filterActs('exec');
   renderActivityTable();
   alert2(`✓ Activity "${name} › ${sub}" added under "${vert}".`);
+}
+
+// ── Team & Passwords (manager only) ─────────────────────────
+function renderTeamTable(){
+  const el=$('team-table');
+  if(!el) return;
+  if(!isManager()){ el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">Managers only.</p>'; return; }
+  if(!EXECS.length){ el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">No users loaded.</p>'; return; }
+  el.innerHTML = `<div class="tbl-wrap"><table><tr><th>Name</th><th>Branch</th><th>Role</th><th></th></tr>`+
+    EXECS.map(u=>`<tr><td>${u.name}</td><td>${u.branch||''}</td><td>${u.role}</td><td><button class="btn sm" onclick="resetUserPassword('${u.id}','${u.name.replace(/'/g,"\\'")}')">🔑 Reset password</button></td></tr>`).join('')+
+    `</table></div>`;
+}
+
+async function resetUserPassword(userId, userName){
+  const newPassword = prompt(`Set a new password for ${userName} (min 4 characters):`);
+  if(newPassword===null) return;
+  if(newPassword.length < 4){ alert2('Password must be at least 4 characters.','err',3000); return; }
+  const res = await apiCall('resetPassword', {targetUserId:userId, newPassword});
+  if(res.ok){ alert2(`✓ Password reset for ${userName}. Tell them their new password.`,'ok',4000); }
+  else { alert2(res.error||'Could not reset password.','err',4000); }
+}
+
+async function addNewUser(){
+  const id=$('new-user-id').value.trim();
+  const name=$('new-user-name').value.trim();
+  const branch=$('new-user-branch').value.trim();
+  const role=$('new-user-role').value;
+  const password=$('new-user-password').value;
+  if(!id||!name||!password){ alert2('ID, name, and password are required.','err',3000); return; }
+  if(password.length<4){ alert2('Password must be at least 4 characters.','err',3000); return; }
+
+  const res = await apiCall('addUser', {newUser:{id, username:id, name, branch, role, password}});
+  if(res.ok){
+    EXECS.push({id:res.user.id, name:res.user.name, branch:res.user.branch, role:res.user.role});
+    ['new-user-id','new-user-name','new-user-branch','new-user-password'].forEach(i=>$(i).value='');
+    $('new-user-role').value='Field Executive';
+    renderTeamTable();
+    refreshSelectors();
+    alert2(`✓ ${name} added. Username: ${id}, password: (as set).`,'ok',4000);
+  } else {
+    alert2(res.error||'Could not add member.','err',4000);
+  }
 }
 
 function renderActivityTable(){
@@ -980,6 +1210,13 @@ function renderExecList(){
   const eid=$('exec-exec').value,m=$('exec-month').value,y=$('exec-year').value;
   const es=executions.filter(e=>e.execId==eid&&e.month==m&&e.year==y);
   const el=$('exec-list');
+
+  const totalQty = es.reduce((s,e)=>s+(isNumeric(e.qty)?e.qty:0),0);
+  const totalDays = es.reduce((s,e)=>s+e.days,0);
+  $('exec-summary').innerHTML = es.length > 0 
+    ? `<span class="exec-badge">${es.length} entries · ${totalQty.toLocaleString()} total · ${totalDays} days</span>`
+    : '';
+
   if(!es.length){el.innerHTML=`<div class="empty">No executions yet for this selection.</div>`;return;}
   el.innerHTML=`<table><thead><tr><th>Activity</th><th>Type</th><th>Quantity</th><th>Days</th><th>Outcome</th><th></th></tr></thead><tbody>`+
     es.map(e=>`<tr class="${e.planId?'':'unrow'}">
@@ -987,8 +1224,11 @@ function renderExecList(){
       <td>${e.planId?`<span class="badge b">Planned</span>`:`<span class="badge p">Unplanned</span>`}</td>
       <td><b>${e.qty}</b> <span style="color:var(--text-muted);font-size:12px">${e.unit}</span></td>
       <td>${e.days}</td>
-      <td style="color:var(--text-secondary)">${e.outcome||'—'}</td>
-      <td><button class="btn sm danger" onclick="delExec('${e.id}')">✕</button></td></tr>`).join('')+`</tbody></table>`;
+      <td style="color:var(--text-secondary);font-size:12px">${e.outcome||'—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn sm edit" onclick="openEditModal('${e.id}')">✏️</button>
+        <button class="btn sm danger" onclick="delExec('${e.id}')">✕</button>
+      </td></tr>`).join('')+`</tbody></table>`;
 }
 
 // ── Render dashboard ───────────────────────────────────────
@@ -1034,7 +1274,7 @@ function renderDashboard(){
   if(!rows.length){gt.innerHTML=`<div class="empty">No data for this selection.</div>`;return;}
 
   gt.innerHTML=`<table><thead><tr>
-    <th>Activity</th><th>Vertical</th><th>Type</th>
+    <th>Type</th><th>Activity</th>
     <th style="text-align:right">Planned</th>
     <th style="text-align:right">Actual</th>
     <th style="text-align:right">Gap</th>
@@ -1058,13 +1298,12 @@ function renderDashboard(){
     // first unit row merged with activity info; subsequent rows are indented
     return unitRows.map((ur,i)=>`<tr class="${r.isUp?'unrow':''}">
       ${i===0?`
+        <td rowspan="${unitRows.length}">${r.isUp?`<span class="badge p">Unplanned</span>`:`<span class="badge b">Planned</span>`}</td>
         <td rowspan="${unitRows.length}">
           <div style="font-size:12px;font-weight:500">${act?act.name:r.actId}</div>
           <div style="font-size:11px;color:var(--text-muted)">${act?act.sub:''}</div>
           ${act&&act.custom?`<span class="badge custom" style="margin-top:3px;font-size:10px">Custom</span>`:''}
         </td>
-        <td rowspan="${unitRows.length}"><span class="tag">${av}</span></td>
-        <td rowspan="${unitRows.length}">${r.isUp?`<span class="badge p">Unplanned</span>`:`<span class="badge b">Planned</span>`}</td>
       `:''}
       <td style="text-align:right">${ur.pSum>0?`<b>${ur.pSum.toLocaleString()}</b> <span style="font-size:11px;color:var(--text-muted)">${ur.u}</span>`:'—'}</td>
       <td style="text-align:right"><b>${ur.aSum.toLocaleString()}</b> <span style="font-size:11px;color:var(--text-muted)">${ur.u}</span></td>
@@ -1120,5 +1359,44 @@ if(document.readyState==='loading'){
   init();
 }
 </script>
+
+<!-- EDIT EXECUTION MODAL -->
+<div id="edit-modal" class="modal-overlay" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Edit Execution Entry</h3>
+      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div class="frow">
+        <div class="fg"><label>Executive</label><select id="edit-exec" disabled style="opacity:0.6"></select></div>
+        <div class="fg"><label>Month</label><select id="edit-month" disabled style="opacity:0.6"><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option><option>Jan</option><option>Feb</option><option>Mar</option></select></div>
+        <div class="fg"><label>Year</label><select id="edit-year" disabled style="opacity:0.6"></select></div>
+        <div class="fg"><label>Link to plan</label><select id="edit-planid" disabled style="opacity:0.6"><option value="">— No plan (unplanned) —</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Vertical</label><select id="edit-vertical" onchange="filterActs('edit')"><option value="">All verticals</option></select></div>
+        <div class="fg"><label>Activity *</label><select id="edit-activity"></select></div>
+        <div class="fg"><label>Actual quantity *</label>
+          <div class="unit-pair">
+            <input type="number" id="edit-qty" placeholder="4" min="0" style="flex:0 0 75px">
+            <select id="edit-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+          </div>
+          <input type="text" id="edit-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
+        </div>
+        <div class="fg"><label>Actual days *</label><input type="number" id="edit-days" placeholder="3" min="0" step="0.5"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Outcome</label><textarea id="edit-outcome" placeholder="What was achieved…"></textarea></div>
+        <div class="fg"><label>Challenges</label><textarea id="edit-challenges" placeholder="Any issues or blockers…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn primary" onclick="saveEditExecution()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
