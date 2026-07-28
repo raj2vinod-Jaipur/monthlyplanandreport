@@ -1,16 +1,1433 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>jrf_planning_reporting_v10_multiuser.html — REMOVED</title>
-  <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f7f9fc;color:#111}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>JRF Monthly Planning & Reporting</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+  --text-primary:#1a1a1a;
+  --text-secondary:#5a5a5a;
+  --text-muted:#9b9994;
+  --text-success:#1D9E75;
+  --text-danger:#E24B4A;
+  --text-warning:#BA7517;
+  --text-accent:#2563eb;
+  --bg-success:#e8f5e9;
+  --bg-danger:#ffebee;
+  --bg-warning:#fff3e0;
+  --bg-accent:#e3f2fd;
+  --surface-0:#f5f5f5;
+  --surface-1:#fff;
+  --surface-2:#fafafa;
+  --border:#e0e0e0;
+  --border-strong:#bdbdbd;
+  --border-accent:#2563eb;
+  --border-success:#1D9E75;
+  --border-danger:#E24B4A;
+  --fill-accent:#2563eb;
+  --on-accent:#fff;
+  --radius:8px;
+}
+body{font-family:var(--font-sans);font-size:14px;color:var(--text-primary);background:var(--surface-0);line-height:1.5;font-weight:600}
+
+/* ===== HEADER ===== */
+.header{background:var(--surface-2);border-bottom:0.5px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:100}
+.header>div:first-child{min-width:0}
+.header>div:first-child>div:first-child{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header>div:first-child>div:last-child{font-size:11px;color:var(--text-muted)}
+
+/* ===== NAVIGATION ===== */
+.nav{display:flex;gap:3px;padding:8px 12px;border-bottom:0.5px solid var(--border);background:var(--surface-1);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{padding:6px 11px;border-radius:var(--radius);border:0.5px solid transparent;background:transparent;cursor:pointer;font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);white-space:nowrap;flex-shrink:0;font-weight:600}
+.nav button.active{background:var(--surface-2);border-color:var(--border-strong);color:var(--text-primary);font-weight:700}
+
+/* ===== PAGES ===== */
+.page{padding:12px 14px;display:none}
+.page.active{display:block}
+
+/* ===== KPI GRID ===== */
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+@media(min-width:768px){.kgrid{grid-template-columns:repeat(6,1fr)}}
+.kpi{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center}
+.kpi h3{font-size:10px;color:var(--text-secondary);font-weight:400;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.kpi .v{font-size:18px;font-weight:700}
+.kpi .v.g{color:var(--text-success)}.kpi .v.r{color:var(--text-danger)}.kpi .v.a{color:var(--text-warning)}.kpi .v.p{color:#7c3aed}
+
+/* ===== SECTIONS ===== */
+.section{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.stitle{font-size:14px;font-weight:700;margin-bottom:10px}
+
+/* ===== FORM ROWS ===== */
+.frow{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+@media(min-width:640px){.frow{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.frow{grid-template-columns:repeat(4,1fr)}}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:11px;color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+
+/* ===== INPUTS ===== */
+select,input,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--surface-1);color:var(--text-primary);font-size:14px;font-family:var(--font-sans);-webkit-appearance:none;appearance:none;touch-action:manipulation;font-weight:600}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--border-accent);box-shadow:0 0 0 2px rgba(37,99,235,0.1)}
+textarea{resize:vertical;min-height:58px}
+
+/* ===== UNIT PAIR ===== */
+.unit-pair{display:flex;gap:6px}
+.unit-pair input{flex:0 0 70px}
+.unit-pair select{flex:1}
+
+/* ===== BUTTONS ===== */
+.btn{padding:8px 14px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:transparent;cursor:pointer;font-size:14px;font-family:var(--font-sans);color:var(--text-primary);font-weight:700;touch-action:manipulation;min-height:40px}
+.btn.primary{background:var(--fill-accent);color:var(--on-accent);border-color:var(--fill-accent)}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:4px 10px;font-size:12px;min-height:32px}
+.btn.danger{color:var(--text-danger);border-color:transparent}
+.btn.ghost{border-color:transparent;color:var(--text-secondary)}
+.btn.edit{color:var(--text-accent);border-color:transparent}
+.exec-count{font-size:11px;color:var(--text-muted);margin-left:4px}
+.exec-badge{display:inline-flex;align-items:center;gap:4px;background:var(--bg-accent);color:var(--text-accent);padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+
+/* ===== TABLES ===== */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+th{text-align:left;padding:8px 10px;font-size:11px;color:var(--text-secondary);border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;background:var(--surface-0);position:sticky;top:0}
+td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:top;font-weight:600}
+tr:last-child td{border-bottom:none}
+tr.unrow{background:rgba(124,58,237,.04)}
+
+/* ===== BADGES & TAGS ===== */
+.badge{display:inline-block;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge.g{background:var(--bg-success);color:var(--text-success)}
+.badge.r{background:var(--bg-danger);color:var(--text-danger)}
+.badge.a{background:var(--bg-warning);color:var(--text-warning)}
+.badge.b{background:var(--bg-accent);color:var(--text-accent)}
+.badge.p{background:#f3e8ff;color:#7c3aed}
+.badge.gray{background:var(--surface-0);color:var(--text-muted)}
+.badge.custom{background:#fef3c7;color:#92400e}
+.tag{font-size:11px;padding:3px 8px;border-radius:100px;background:var(--surface-0);color:var(--text-muted);border:0.5px solid var(--border);white-space:nowrap;font-weight:600}
+
+/* ===== PROGRESS BAR ===== */
+.pbar{height:5px;background:var(--surface-0);border-radius:3px;overflow:hidden;margin-top:5px}
+.pfill{height:100%;border-radius:3px}
+
+/* ===== ALERTS ===== */
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin:6px 0;border:0.5px solid;font-weight:600}
+.alert.ok{background:var(--bg-success);color:var(--text-success);border-color:var(--border-success)}
+.alert.err{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
+.alert.warn{background:#f3e8ff;color:#7c3aed;border-color:#c4b5fd}
+.alert.info{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+
+/* ===== BANNERS ===== */
+.banner{padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:10px;border:0.5px solid;font-weight:600}
+.banner.plan{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+.banner.unplan{background:#f3e8ff;color:#7c3aed;border-color:#c4b5fd}
+
+/* ===== TABS ===== */
+.tabs{display:flex;border-bottom:0.5px solid var(--border);margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap;flex-shrink:0;font-weight:600}
+.tab.active{color:var(--text-accent);border-bottom-color:var(--fill-accent);font-weight:700}
+
+/* ===== FILTERS ===== */
+.filt{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.filt select{width:auto;min-width:120px;flex:1;min-width:120px}
+
+/* ===== BOXES ===== */
+.fbox{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.fbox-row{display:flex;gap:7px;flex-wrap:wrap}
+.fbox-row select{flex:1;min-width:120px}
+
+/* ===== EMPTY STATE ===== */
+.empty{text-align:center;padding:32px 20px;color:var(--text-muted);font-size:13px;font-weight:600}
+
+/* ===== LEGEND ===== */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--text-secondary);align-items:center;font-weight:600}
+.ldot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle}
+
+/* ===== MANAGER SECTION ===== */
+.mgr-only{border:0.5px dashed var(--border-strong);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:var(--surface-0)}
+.mgr-only .mgr-label{font-size:11px;color:var(--text-accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;display:flex;align-items:center;gap:5px}
+
+/* ===== AUTO FILLED ===== */
+.autofilled{border-color:var(--border-accent)!important;background:var(--bg-accent)!important}
+
+/* ===== ALERT ZONE ===== */
+#alert-zone{padding:0 14px}
+
+/* ===== MOBILE SPECIFIC ===== */
+@media(max-width:480px){
+  body{font-size:15px;font-weight:600}
+  .header{padding:13px 14px}
+  .header>div:first-child>div:first-child{font-size:16px;font-weight:800}
+  .header>div:first-child>div:last-child{font-size:12px}
+  .nav{padding:10px 12px;gap:5px}
+  .nav button{padding:7px 12px;font-size:13px;font-weight:700}
+  .kpi{padding:12px 10px}
+  .kpi .v{font-size:20px;font-weight:800}
+  .kpi h3{font-size:11px;font-weight:500}
+  .section{padding:14px 14px}
+  .stitle{font-size:15px;font-weight:800;margin-bottom:12px}
+  .fg label{font-size:12px;font-weight:700}
+  .btn{padding:12px 18px;font-size:16px;font-weight:700;min-height:48px}
+  .btn.sm{padding:8px 12px;font-size:13px;min-height:38px}
+  select,input,textarea{font-size:16px;padding:12px 12px;min-height:48px}
+  textarea{min-height:72px}
+  table{font-size:13px}
+  th,td{padding:10px 10px}
+  .tbl-wrap{margin:0 -14px;padding:0 14px}
+  .badge{padding:4px 10px;font-size:12px}
+  .tag{padding:4px 10px;font-size:12px}
+  .alert{padding:12px 14px;font-size:14px}
+  .banner{padding:12px 14px;font-size:14px}
+  .tab{padding:10px 16px;font-size:14px}
+  .legend{font-size:13px}
+  .fbox{padding:14px}
+  .empty{padding:40px 20px;font-size:14px}
+  .mgr-only{padding:14px}
+  .mgr-only .mgr-label{font-size:12px}
+  #login-badge select{font-size:13px;padding:5px 10px}
+}
+
+/* ===== TOUCH FRIENDLY ===== */
+select,input,textarea,button,.tab,.nav button{-webkit-tap-highlight-color:transparent}
+select,input,textarea{font-size:16px}
+@media(min-width:769px){select,input,textarea{font-size:14px}}
+
+/* ===== LARGE PHONES (481px–767px) ===== */
+@media(min-width:481px) and (max-width:767px){
+  body{font-size:15px;font-weight:600}
+  .header>div:first-child>div:first-child{font-size:16px}
+  .nav button{padding:7px 12px;font-size:13px}
+  .kpi .v{font-size:18px}
+  .kpi h3{font-size:11px}
+  .btn{padding:11px 16px;font-size:15px;min-height:46px}
+  select,input,textarea{padding:11px 12px;min-height:46px}
+  table{font-size:13px}
+  th,td{padding:9px 10px}
+}
+
+/* ===== REDUCED MOTION ===== */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface-1);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal-header{padding:16px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:16px;font-weight:700}
+.modal-body{padding:16px 20px}
+.modal-footer{padding:12px 20px;border-top:0.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.modal-close{background:none;border:none;font-size:22px;color:var(--text-muted);cursor:pointer;padding:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--surface-0)}
+/* ===== MOBILE MODAL ===== */
+@media(max-width:480px){
+  .modal{border-radius:12px}
+  .modal-header{padding:14px 16px}
+  .modal-body{padding:14px 16px}
+  .modal-footer{padding:10px 16px}
+}
+
+/* ===== LOGIN SCREEN ===== */
+#login-screen{position:fixed;inset:0;background:var(--surface-0);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+#login-screen.hidden{display:none}
+.login-card{background:var(--surface-1);border:0.5px solid var(--border);border-radius:14px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.login-card h2{font-size:18px;margin-bottom:2px}
+.login-card p{font-size:12px;color:var(--text-muted);margin-bottom:18px}
+.login-card .fg{margin-bottom:12px}
+.login-card label{font-size:11px;color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px}
+#login-error{font-size:12px;color:var(--text-danger);min-height:16px;margin-bottom:8px}
+#app-root.hidden{display:none}
+.user-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:0.5px solid var(--border-strong);border-radius:20px;padding:4px 6px 4px 12px}
+.user-chip button{background:none;border:none;color:var(--text-accent);font-size:11px;font-weight:700;cursor:pointer;padding:4px 8px}
+</style>
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563eb'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E📊%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-  <div style="max-width:720px;padding:28px;border-radius:12px;background:#fff;border:1px solid #e6eef8;box-shadow:0 6px 24px rgba(15,23,42,0.06);">
-    <h1 style="margin:0 0 8px 0;font-size:18px;">File removed</h1>
-    <p style="margin:0 0 12px 0;color:#475569;">The file <strong>jrf_planning_reporting_v10_multiuser.html</strong> was replaced with this placeholder on 2026-07-28 at the request of the repository owner. The original content has been removed from this path but remains in the repository history and can be restored from previous commits if needed.</p>
-    <p style="margin:0;color:#334155;font-size:13px">If you want a copy archived in the repository instead of deletion, or want this change made on a separate branch/PR, tell me and I will update accordingly.</p>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h2>JRF Planning & Reporting</h2>
+    <p>Sign in with your username and password.</p>
+    <div id="login-error"></div>
+    <div class="fg"><label>Username</label><input type="text" id="login-username" autocomplete="username" placeholder="e.g. 2222"></div>
+    <div class="fg"><label>Password</label><input type="password" id="login-password" autocomplete="current-password" placeholder="Password"></div>
+    <button class="btn primary" style="width:100%" id="login-btn" onclick="doLogin()">Sign in</button>
+    <p id="login-backend-version" style="font-size:10px;color:var(--text-muted);margin-top:12px;margin-bottom:0;text-align:center">Checking backend version…</p>
   </div>
+</div>
+
+<div id="app-root" class="hidden">
+<!-- header -->
+<div class="header">
+  <div>
+    <div style="font-size:15px;font-weight:600">JRF Monthly Planning & Reporting</div>
+    <div style="font-size:11px;color:var(--text-muted)">Jaipur Rugs Foundation · Plan vs Execution Tracker</div>
+  </div>
+  <div id="login-badge" class="user-chip">Not logged in</div>
+</div>
+
+<!-- nav -->
+<div class="nav">
+  <button class="active" onclick="showPage('dashboard',this)">📊 Dashboard</button>
+  <button onclick="showPage('plan',this)">📅 Add Plan</button>
+  <button onclick="showPage('execution',this)">✅ Add Execution</button>
+  <button onclick="showPage('records',this)">📋 All Records</button>
+  <button id="nav-manage" onclick="showPage('manage',this)" style="display:none">⚙️ Manage Activities</button>
+  <button id="nav-trash" onclick="showPage('trash',this)" style="display:none">🗑️ Trash</button>
+</div>
+
+<div id="alert-zone"></div>
+
+<div class="section" style="margin:12px 16px 0">
+  <div class="fbox" style="margin-bottom:0">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em">Google Sheet Backend <span id="backend-version-badge" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)"></span></label>
+        <div id="backend-status" style="font-size:12px;color:var(--text-secondary);margin-top:4px">Connecting...</div>
+      </div>
+      <button class="btn" onclick="syncFromBackend()" id="sync-btn">🔄 Sync Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="fbox">
+    <div style="font-size:13px;font-weight:500;margin-bottom:9px;color:var(--text-secondary)">Filter dashboard</div>
+    <div class="fbox-row">
+      <select id="dash-exec" onchange="renderDashboard()"><option value="">— All executives —</option></select>
+      <select id="dash-month" onchange="renderDashboard()"><option value="">All months</option></select>
+      <select id="dash-fy" onchange="renderDashboard()"><option value="">All FYs</option></select>
+    </div>
+  </div>
+  <div id="kpi-row" class="kgrid"></div>
+  <div class="section">
+    <div class="stitle">Plan vs Execution by Activity</div>
+    <div class="legend">
+      <span><span class="ldot" style="background:#1D9E75"></span>≥90%</span>
+      <span><span class="ldot" style="background:#BA7517"></span>60–89%</span>
+      <span><span class="ldot" style="background:#E24B4A"></span>&lt;60%</span>
+      <span><span class="badge p" style="font-size:10px">Unplanned</span> extra work</span>
+      <span><span class="badge custom" style="font-size:10px">Custom</span> manager-added activity</span>
+    </div>
+    <div class="tbl-wrap"><div id="gap-table"></div></div>
+  </div>
+</div>
+
+<!-- ADD PLAN -->
+<div id="page-plan" class="page">
+  <div class="section">
+    <div class="stitle">📅 Submit monthly plan</div>
+    <div class="frow">
+      <div class="fg"><label>Executive *</label><select id="plan-exec" onchange="renderPlanList()"></select></div>
+      <div class="fg"><label>Month *</label>
+        <select id="plan-month" onchange="renderPlanList()"><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option><option>Jan</option><option>Feb</option><option>Mar</option></select>
+      </div>
+      <div class="fg"><label>Year *</label><select id="plan-year" onchange="renderPlanList()"></select></div>
+      <div class="fg"><label>Financial year *</label>
+        <select id="plan-fy"><option>FY24-25</option><option>FY25-26</option><option selected>FY26-27</option></select>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Vertical</label><select id="plan-vertical" onchange="filterActs('plan')"><option value="">All verticals</option></select></div>
+      <div class="fg"><label>Activity *</label><select id="plan-activity"></select></div>
+      <div class="fg"><label>Planned quantity *</label>
+        <div class="unit-pair">
+          <input type="number" id="plan-qty" placeholder="5" min="0" style="flex:0 0 75px">
+          <select id="plan-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+        </div>
+        <input type="text" id="plan-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
+      </div>
+      <div class="fg"><label>Planned days *</label><input type="number" id="plan-days" placeholder="3" min="0" step="0.5"></div>
+    </div>
+    <div class="frow">
+      <div class="fg" style="grid-column:1/-1"><label>Notes / location</label>
+        <textarea id="plan-notes" placeholder="Villages, locations, or other context…"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn primary" id="plan-btn" onclick="submitPlan()">+ Add plan entry</button>
+      <button class="btn ghost" onclick="clearPlanForm()">Clear</button>
+    </div>
+  </div>
+  <div class="section"><div class="stitle">Plans this selection</div><div class="tbl-wrap"><div id="plan-list"></div></div></div>
+</div>
+
+<!-- ADD EXECUTION -->
+<div id="page-execution" class="page">
+  <div class="section">
+    <div class="stitle">✅ Submit execution report</div>
+    <div class="frow">
+      <div class="fg"><label>Executive *</label><select id="exec-exec" onchange="onExecCtxChange()"></select></div>
+      <div class="fg"><label>Month *</label>
+        <select id="exec-month" onchange="onExecCtxChange()"><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option><option>Jan</option><option>Feb</option><option>Mar</option></select>
+      </div>
+      <div class="fg"><label>Year *</label><select id="exec-year" onchange="onExecCtxChange()"></select></div>
+      <div class="fg"><label>Link to plan</label>
+        <select id="exec-planid" onchange="onPlanLinked()"><option value="">— No plan (unplanned) —</option></select>
+      </div>
+    </div>
+    <div id="banner-plan" class="banner plan" style="display:none">✓ Fields auto-filled from linked plan — adjust if needed.</div>
+    <div id="banner-unplan" class="banner unplan" style="display:none">⚡ Unplanned activity — will show as extra work on the dashboard.</div>
+    <div class="frow">
+      <div class="fg"><label>Vertical</label><select id="exec-vertical" onchange="filterActs('exec')"><option value="">All verticals</option></select></div>
+      <div class="fg"><label>Activity *</label><select id="exec-activity"></select></div>
+      <div class="fg"><label>Actual quantity *</label>
+        <div class="unit-pair">
+          <input type="number" id="exec-qty" placeholder="4" min="0" style="flex:0 0 75px">
+          <select id="exec-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+        </div>
+        <input type="text" id="exec-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
+      </div>
+      <div class="fg"><label>Actual days *</label><input type="number" id="exec-days" placeholder="3" min="0" step="0.5"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Outcome</label><textarea id="exec-outcome" placeholder="What was achieved…"></textarea></div>
+      <div class="fg"><label>Challenges</label><textarea id="exec-challenges" placeholder="Any issues or blockers…"></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn primary" id="exec-btn" onclick="submitExecution()">✓ Submit execution</button>
+      <button class="btn ghost" onclick="clearExecForm()">Clear</button>
+    </div>
+  </div>
+  <div class="section"><div class="stitle">Executions this selection <span id="exec-summary" class="exec-count"></span></div><div class="tbl-wrap"><div id="exec-list"></div></div></div>
+</div>
+
+<!-- ALL RECORDS -->
+<div id="page-records" class="page">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('plans',this)">Plans</div>
+    <div class="tab" onclick="switchTab('executions',this)">Executions</div>
+  </div>
+  <div class="filt">
+    <select id="rec-exec" onchange="renderRecords()"><option value="">All executives</option></select>
+    <select id="rec-month" onchange="renderRecords()"><option value="">All months</option></select>
+    <select id="rec-fy" onchange="renderRecords()"><option value="">All FYs</option></select>
+  </div>
+  <div class="tbl-wrap"><div id="records-out"></div></div>
+</div>
+
+<!-- MANAGE ACTIVITIES (manager only) -->
+<div id="page-manage" class="page">
+  <div class="section">
+    <div class="stitle">👥 Team & Passwords</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Reset a worker's password if they're locked out. They can also change it themselves via the 🔑 button next to their name.</p>
+    <div id="team-table"></div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:0.5px solid var(--border)">
+      <div class="stitle" style="font-size:13px;margin-bottom:8px">+ Add new member</div>
+      <div class="frow">
+        <div class="fg"><label>ID / Username *</label><input type="text" id="new-user-id" placeholder="e.g. 4444"></div>
+        <div class="fg"><label>Full name *</label><input type="text" id="new-user-name" placeholder="e.g. Priya Sharma"></div>
+        <div class="fg"><label>Branch</label><input type="text" id="new-user-branch" placeholder="e.g. Sanganer"></div>
+        <div class="fg"><label>Role</label>
+          <select id="new-user-role"><option value="Field Executive">Field Executive</option><option value="Manager">Manager</option></select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Temporary password *</label><input type="text" id="new-user-password" placeholder="min 4 characters"></div>
+      </div>
+      <button class="btn primary" onclick="addNewUser()">+ Add member</button>
+    </div>
+  </div>
+  <div class="mgr-only">
+    <div class="mgr-label">⚙️ Manager controls — add new vertical or activity</div>
+    <div class="frow" style="margin-bottom:10px">
+      <div class="fg">
+        <label>Vertical *</label>
+        <div style="display:flex;gap:6px">
+          <select id="mgr-vertical" style="flex:1" onchange="onMgrVerticalChange()"><option value="">— Select or add new —</option></select>
+          <input type="text" id="mgr-vertical-new" placeholder="New vertical name…" style="flex:1;display:none">
+        </div>
+        <label style="margin-top:5px;display:flex;align-items:center;gap:6px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px;color:var(--text-secondary)">
+          <input type="checkbox" id="mgr-new-vertical" onchange="toggleNewVertical()"> Add a brand-new vertical
+        </label>
+      </div>
+      <div class="fg">
+        <label>Activity name *</label>
+        <input type="text" id="mgr-act-name" placeholder="e.g. Community Mapping">
+      </div>
+      <div class="fg">
+        <label>Sub-activity *</label>
+        <input type="text" id="mgr-act-sub" placeholder="e.g. Survey & data collection">
+      </div>
+      <div class="fg">
+        <label>Default unit label</label>
+        <select id="mgr-act-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+      </div>
+    </div>
+    <button class="btn primary" onclick="addCustomActivity()">+ Save new activity</button>
+  </div>
+
+  <div class="section">
+    <div class="stitle">All activities <span id="act-count" style="font-size:12px;font-weight:400;color:var(--text-muted)"></span></div>
+    <div class="filt">
+      <select id="mgr-filter-vert" onchange="renderActivityTable()"><option value="">All verticals</option></select>
+    </div>
+    <div class="tbl-wrap"><div id="act-table"></div></div>
+  </div>
+</div>
+
+<div id="page-trash" class="page">
+  <div class="section">
+    <div class="stitle">🗑️ Deleted Plans</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Only managers can see this. Restoring puts the record back into the live list.</p>
+    <div class="tbl-wrap"><div id="trash-plan-table"></div></div>
+  </div>
+  <div class="section">
+    <div class="stitle">🗑️ Deleted Executions</div>
+    <div class="tbl-wrap"><div id="trash-exec-table"></div></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── Seed data ───────────────────────────────────────────────
+// NOTE: EXECS / ACTS / plans / executions are no longer hardcoded here.
+// They are loaded per-user from the backend after a real login (see
+// doLogin() / bootstrap() below). Field Executives only ever receive
+// their own plans/executions; Managers receive everyone's.
+const UNIT_LABELS=['persons','villages','sessions','camps','trainings','applications','distributions','visits','enrolments','registrations'];
+
+let EXECS=[];
+let ACTS=[];
+let plans=[];
+let executions=[];
+
+const ALL_FYS=['FY24-25','FY25-26','FY26-27'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// ═══════════════════════════════════════════════════════════
+//  CONFIG: Paste your NEW Apps Script Web App URL here
+//  (the one deployed from Code.gs against your fresh Sheet)
+// ═══════════════════════════════════════════════════════════
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyDMzr1uwEQe8prU9VXl8uYkQ8AElyVD11c2cO-hs_QaPrKsNhLmsXLolG6AfTWLZ6x/exec';
+
+let activeTab='plans';
+let currentUser=null; // set on login, e.g. {id,name,branch,role,username}
+let authToken=null;
+let syncInFlight=false;
+let editingExecId=null; // track which execution is being edited
+
+// ── Helpers ────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+function uid(){return 'C'+Math.random().toString(36).slice(2,7).toUpperCase();}
+function exObj(id){return EXECS.find(e=>e.id==id);}
+function actObj(id){return ACTS.find(a=>a.id==id);}
+function actLabel(id){const a=actObj(id);return a?`${a.name} › ${a.sub}`:`Activity ${id}`;}
+function actVertical(id){const a=actObj(id);return a?a.vertical:'';}
+function qtyLabel(qty,unit){return qty!=null?`${qty} ${unit}`:'—';}
+function isNumeric(n){return !isNaN(parseFloat(n))&&isFinite(n);}
+function curMonth(){return new Date().toLocaleString('en',{month:'short'});}
+function curYear(){return new Date().getFullYear();}
+function isManager(){return currentUser&&currentUser.role==='Manager';}
+
+function alert2(msg,type='ok',ms=4500){
+  const z=$('alert-zone');
+  z.innerHTML=`<div class="alert ${type}" style="margin:6px 0">${msg}</div>`;
+  if(ms) setTimeout(()=>z.innerHTML='',ms);
+}
+
+function setBackendStatus(msg,kind='info'){
+  const el=$('backend-status');
+  if(!el) return;
+  el.textContent=msg;
+  el.style.color=kind==='err'?'var(--text-danger)':kind==='ok'?'var(--text-success)':'var(--text-secondary)';
+}
+
+// saveBackendUrl removed — URL is now hardcoded in BACKEND_URL constant above
+// No user input needed. Just share the HTML file.
+
+// ═══════════════════════════════════════════════════════════
+//  AUTH + PER-RECORD BACKEND API CALLS
+//  Every add/edit/delete now touches exactly one row on the
+//  server. No more "save the whole dataset" — that was the
+//  cause of concurrent users overwriting each other's data.
+// ═══════════════════════════════════════════════════════════
+
+// Confirms the live Apps Script deployment is actually running the code
+// you think it's running — the #1 cause of "I fixed it but nothing
+// changed" is editing the script without pushing a new deployment version.
+async function checkBackendVersion(){
+  const el = $('login-backend-version');
+  if(!el) return;
+  if(!BACKEND_URL || BACKEND_URL.indexOf('PASTE_YOUR')===0){
+    el.textContent = 'Backend URL not configured.';
+    return;
+  }
+  try{
+    const res = await fetch(BACKEND_URL, {method:'GET', mode:'cors'});
+    const data = await res.json();
+    backendVersionSeen = data._backendVersion || 'unknown (older backend)';
+    el.textContent = 'Backend version: ' + backendVersionSeen;
+  }catch(e){
+    el.textContent = 'Could not reach backend to check version.';
+  }
+}
+
+async function apiCall(action, payload){
+  if(!BACKEND_URL || BACKEND_URL.indexOf('PASTE_YOUR')===0){
+    alert2('Backend URL not configured yet. See BACKEND_URL near the top of the script.','err',6000);
+    return {ok:false, error:'Backend not configured'};
+  }
+  try{
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const res = await fetch(BACKEND_URL,{
+      method:'POST',
+      mode:'cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(Object.assign({action, token: authToken}, payload || {})),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    let data=null;
+    try{ data = await res.json(); } catch(e){ try{ data = JSON.parse(await res.text()); } catch(err){ data=null; } }
+    if(!data){ return {ok:false, error:'No response from server.'}; }
+    if(data._backendVersion){
+      backendVersionSeen = data._backendVersion;
+      const badge = $('backend-version-badge');
+      if(badge) badge.textContent = '(' + data._backendVersion + ')';
+    }
+    if(data.ok===false && data.error==='Not logged in. Please log in again.'){
+      // Session expired — send back to login.
+      logout(false);
+    }
+    return data;
+  }catch(e){
+    if(e.name==='AbortError') return {ok:false, error:'Request timed out.'};
+    return {ok:false, error:'Network error: '+e.message};
+  }
+}
+
+// ── Login / session ──────────────────────────────────────────
+function loadStoredSession(){
+  try{
+    const raw = localStorage.getItem('jrf_session');
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function storeSession(token, user){
+  try{ localStorage.setItem('jrf_session', JSON.stringify({token, user})); }catch(e){}
+}
+function clearStoredSession(){
+  try{ localStorage.removeItem('jrf_session'); }catch(e){}
+}
+
+async function doLogin(){
+  const username = $('login-username').value.trim();
+  const password = $('login-password').value;
+  const errEl = $('login-error');
+  errEl.textContent='';
+  if(!username || !password){ errEl.textContent='Please enter username and password.'; return; }
+  $('login-btn').disabled = true; $('login-btn').textContent='Signing in…';
+  const res = await apiCall('login', {username, password});
+  $('login-btn').disabled = false; $('login-btn').textContent='Sign in';
+  if(res.ok){
+    authToken = res.token;
+    currentUser = res.user;
+    storeSession(authToken, currentUser);
+    await afterLogin();
+  } else {
+    errEl.textContent = res.error || 'Login failed.';
+  }
+}
+
+let backendVersionSeen = null;
+
+async function afterLogin(){
+  $('login-screen').classList.add('hidden');
+  $('app-root').classList.remove('hidden');
+  updateLoginBadge();
+  setBackendStatus('Loading your data…','info');
+  const ok = await bootstrapFromBackend();
+  if(ok){
+    setBackendStatus('✓ Connected (backend '+(backendVersionSeen||'unknown')+'). Showing '+(isManager()?'all workers\' data (Manager view)':'your data only')+'.','ok');
+  } else {
+    setBackendStatus('Could not load data from the backend. Check BACKEND_URL and try Sync Now.','err');
+  }
+  $('nav-manage').style.display = isManager()?'':'none';
+  $('nav-trash').style.display = isManager()?'':'none';
+  refreshSelectors();
+  renderDashboard();
+}
+
+function logout(callServer){
+  if(callServer!==false && authToken){ apiCall('logout', {}); }
+  authToken=null; currentUser=null; EXECS=[]; ACTS=[]; plans=[]; executions=[];
+  clearStoredSession();
+  $('app-root').classList.add('hidden');
+  $('login-screen').classList.remove('hidden');
+  $('login-username').value=''; $('login-password').value='';
+}
+
+async function bootstrapFromBackend(){
+  const res = await apiCall('bootstrap', {});
+  if(res && res._backendVersion) backendVersionSeen = res._backendVersion;
+  if(!res.ok) return false;
+  ACTS = res.acts || [];
+  EXECS = res.execs || [];
+  plans = res.plans || [];
+  executions = res.executions || [];
+  return true;
+}
+
+async function syncFromBackend(){
+  setBackendStatus('Syncing…','info');
+  $('sync-btn').disabled = true;
+  const ok = await bootstrapFromBackend();
+  $('sync-btn').disabled = false;
+  if(ok){
+    refreshSelectors();
+    renderDashboard();
+    setBackendStatus('✓ Sync complete.','ok');
+    alert2('Sync complete!','ok',2000);
+  } else {
+    setBackendStatus('✗ Sync failed.','err');
+  }
+}
+
+async function changeOwnPassword(){
+  const oldPassword = prompt('Enter your current password:');
+  if(oldPassword===null) return;
+  const newPassword = prompt('Enter your new password (min 4 characters):');
+  if(newPassword===null) return;
+  const res = await apiCall('changePassword', {oldPassword, newPassword});
+  if(res.ok){ alert2('✓ Password changed.','ok',3000); }
+  else { alert2(res.error||'Could not change password.','err',4000); }
+}
+
+// ── Unit pair toggle ───────────────────────────────────────
+function wireUnitPair(prefix){
+  const unitEl=$(prefix+'-unit');
+  const customEl=$(prefix+'-unit-custom');
+  if(!unitEl||!customEl) return;
+  unitEl.addEventListener('change',function(){
+    customEl.style.display=this.value==='Other'?'block':'none';
+  });
+}
+function getUnit(prefix){
+  const unitEl=$(prefix+'-unit');
+  const customEl=$(prefix+'-unit-custom');
+  if(!unitEl) return 'units';
+  const sel=unitEl.value;
+  if(sel==='Other' && customEl){
+    const c=customEl.value.trim();
+    return c||'units';
+  }
+  return sel;
+}
+function setUnit(prefix,unit){
+  const unitEl=$(prefix+'-unit');
+  const customEl=$(prefix+'-unit-custom');
+  if(!unitEl) return;
+  const opts=Array.from(unitEl.options).map(o=>o.value);
+  if(opts.includes(unit)){
+    unitEl.value=unit;
+    if(customEl) customEl.style.display='none';
+  } else {
+    unitEl.value='Other';
+    if(customEl){
+      customEl.style.display='block';
+      customEl.value=unit;
+    }
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────
+async function init(){
+  const years=[2024,2025,2026,2027];
+  ['plan-year','exec-year','edit-year'].forEach(id=>{
+    $(id).innerHTML=years.map(y=>`<option${y===curYear()?' selected':''}>${y}</option>`).join('');
+  });
+  ['plan-month','exec-month'].forEach(id=>{try{$(id).value=curMonth();}catch(e){}});
+
+  wireUnitPair('plan'); wireUnitPair('exec'); wireUnitPair('edit');
+
+  ['dash-fy','rec-fy'].forEach(id=>$(id).innerHTML=`<option value="">All FYs</option>`+ALL_FYS.map(f=>`<option>${f}</option>`).join(''));
+  ['dash-month','rec-month'].forEach(id=>$(id).innerHTML=`<option value="">All months</option>`+MONTHS.map(m=>`<option>${m}</option>`).join(''));
+
+  // Enter key submits the login form
+  ['login-username','login-password'].forEach(id=>{
+    $(id).addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  });
+
+  checkBackendVersion();
+
+  // Try to resume an existing session instead of showing the login form again
+  const saved = loadStoredSession();
+  if(saved && saved.token && saved.user){
+    authToken = saved.token;
+    currentUser = saved.user;
+    await afterLogin();
+  } else {
+    $('login-screen').classList.remove('hidden');
+    $('app-root').classList.add('hidden');
+  }
+}
+
+function updateLoginBadge(){
+  const badge=$('login-badge');
+  if(!badge || !currentUser) return;
+  badge.innerHTML = `<span>${currentUser.name} — ${currentUser.role}</span>`+
+    `<button onclick="changeOwnPassword()" title="Change password">🔑</button>`+
+    `<button onclick="logout()" title="Log out">Log out</button>`;
+}
+
+function refreshSelectors(){
+  // Plan/Execution forms: only the logged-in worker (Managers can still
+  // record entries for themselves; they don't file plans "as" someone else).
+  const execOpts = isManager()
+    ? EXECS.map(e=>`<option value="${e.id}">${e.name} (${e.branch})</option>`).join('')
+    : `<option value="${currentUser.id}">${currentUser.name} (${currentUser.branch||''})</option>`;
+  ['plan-exec','exec-exec','edit-exec'].forEach(id=>{const el=$(id); if(el){ el.innerHTML=execOpts; el.value=currentUser.id; }});
+
+  // Dashboard / Records filters: Managers can filter by any worker; workers only see themselves.
+  const filterOpts = isManager()
+    ? `<option value="">— All executives —</option>`+EXECS.map(e=>`<option value="${e.id}">${e.name}</option>`).join('')
+    : `<option value="${currentUser.id}">${currentUser.name}</option>`;
+  ['dash-exec','rec-exec'].forEach(id=>{const el=$(id); if(el){ el.innerHTML=filterOpts; if(!isManager()) el.value=currentUser.id; }});
+
+  buildVerticalSelects(); filterActs('plan'); filterActs('exec');
+}
+
+function buildVerticalSelects(){
+  const verts=[...new Set(ACTS.map(a=>a.vertical))];
+  ['plan-vertical','exec-vertical','mgr-filter-vert','edit-vertical'].forEach(id=>{
+    const el=$(id); if(!el) return;
+    const cur=el.value;
+    el.innerHTML=`<option value="">All verticals</option>`+verts.map(v=>`<option>${v}</option>`).join('');
+    el.value=cur;
+  });
+  // mgr vertical select (existing ones only)
+  if($('mgr-vertical')){
+    const cur=$('mgr-vertical').value;
+    $('mgr-vertical').innerHTML=`<option value="">— Select or add new —</option>`+verts.map(v=>`<option>${v}</option>`).join('');
+    $('mgr-vertical').value=cur;
+  }
+}
+
+function filterActs(pfx){
+  const v=$(pfx+'-vertical').value;
+  const list=v?ACTS.filter(a=>a.vertical===v):ACTS;
+  $(pfx+'-activity').innerHTML=list.map(a=>`<option value="${a.id}">${a.name} › ${a.sub}${a.custom?' ⭐':''}</option>`).join('');
+  // auto-set unit from activity default
+  const firstAct=list[0];
+  if(firstAct && pfx!=='mgr') setUnit(pfx, firstAct.unit||'persons');
+}
+
+document.addEventListener('change',function(e){
+  const target=e.target;
+  if(target && (target.id==='plan-activity'||target.id==='exec-activity'||target.id==='edit-activity')){
+    const pfx=target.id.split('-')[0];
+    const act=actObj(target.value);
+    if(act) setUnit(pfx,act.unit||'persons');
+  }
+});
+
+// ── Navigation ─────────────────────────────────────────────
+function showPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  $('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='plan') renderPlanList();
+  if(name==='execution'){rebuildPlanLinks();renderExecList();}
+  if(name==='records') renderRecords();
+  if(name==='manage'){buildVerticalSelects();renderActivityTable();renderTeamTable();}
+  if(name==='trash'){renderTrash();}
+}
+function switchTab(tab,el){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderRecords();
+}
+
+// ── Execution context ──────────────────────────────────────
+function onExecCtxChange(){
+  rebuildPlanLinks(); clearExecAutofill();
+  $('banner-unplan').style.display='block';
+  $('banner-plan').style.display='none';
+  renderExecList();
+}
+function rebuildPlanLinks(){
+  const eid=$('exec-exec').value,m=$('exec-month').value,y=$('exec-year').value;
+  const ps=plans.filter(p=>p.execId==eid&&p.month==m&&p.year==y);
+  $('exec-planid').innerHTML=`<option value="">— No plan (unplanned activity) —</option>`+
+    ps.map(p=>`<option value="${p.id}">${actLabel(p.actId)} · ${qtyLabel(p.qty,p.unit)} / ${p.days} days</option>`).join('');
+  $('banner-unplan').style.display='block';
+  $('banner-plan').style.display='none';
+}
+function onPlanLinked(){
+  const planId=$('exec-planid').value;
+  if(!planId){clearExecAutofill();$('banner-unplan').style.display='block';return;}
+  $('banner-unplan').style.display='none';
+  const plan=plans.find(p=>p.id===planId);
+  if(!plan) return;
+  const vert=actVertical(plan.actId);
+  $('exec-vertical').value=vert; filterActs('exec');
+  $('exec-activity').value=plan.actId;
+  $('exec-qty').value=plan.qty;
+  setUnit('exec',plan.unit);
+  $('exec-days').value=plan.days;
+  ['exec-activity','exec-vertical','exec-qty','exec-days'].forEach(id=>$(id).classList.add('autofilled'));
+  $('exec-unit').classList.add('autofilled');
+  $('banner-plan').style.display='block';
+}
+function clearExecAutofill(){
+  ['exec-activity','exec-vertical','exec-qty','exec-days','exec-unit'].forEach(id=>$(id).classList.remove('autofilled'));
+  $('banner-plan').style.display='none';
+  $('banner-unplan').style.display='none';
+}
+
+// ── Submit plan ────────────────────────────────────────────
+// ── Prevents duplicate saves from a fast double-click/double-tap ──
+// (this was creating two separate rows with different IDs for the
+// same entry, which is why a "deleted" plan could appear to come back)
+const _busyButtons = new Set();
+async function withButtonGuard(buttonId, fn){
+  if(_busyButtons.has(buttonId)) return; // ignore rapid repeat clicks
+  _busyButtons.add(buttonId);
+  const btn = $(buttonId);
+  const originalText = btn ? btn.textContent : null;
+  if(btn){ btn.disabled = true; }
+  try{
+    await fn();
+  } finally {
+    _busyButtons.delete(buttonId);
+    if(btn){ btn.disabled = false; if(originalText!==null) btn.textContent = originalText; }
+  }
+}
+
+async function submitPlan(){ return withButtonGuard('plan-btn', _submitPlan); }
+async function _submitPlan(){
+  const execId=$('plan-exec').value,month=$('plan-month').value,year=$('plan-year').value;
+  const fy=$('plan-fy').value,actId=$('plan-activity').value;
+  const qty=parseFloat($('plan-qty').value);
+  const unit=getUnit('plan');
+  const days=parseFloat($('plan-days').value);
+  const notes=$('plan-notes').value;
+  if(!execId||!actId||isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
+
+  setBackendStatus('💾 Saving to Google Sheet...','info');
+  const res = await apiCall('addPlan', {plan:{execId,month,year,fy,actId,qty,unit,days,notes}});
+  if(res.ok){
+    plans.push(res.plan);
+    clearPlanForm(); renderPlanList();
+    setBackendStatus('✓ Plan saved to Google Sheet','ok');
+    alert2('✓ Plan entry added!','ok',2000);
+  } else {
+    setBackendStatus('✗ Save failed.','err');
+    alert2(res.error||'Could not save the plan.','err',5000);
+  }
+}
+function clearPlanForm(){['plan-qty','plan-days','plan-notes'].forEach(id=>$(id).value='');}
+
+// ── Submit execution ───────────────────────────────────────
+async function submitExecution(){ return withButtonGuard('exec-btn', _submitExecution); }
+async function _submitExecution(){
+  const execId=$('exec-exec').value,month=$('exec-month').value,year=$('exec-year').value;
+  const actId=$('exec-activity').value;
+  const qty=parseFloat($('exec-qty').value);
+  const unit=getUnit('exec');
+  const days=parseFloat($('exec-days').value);
+  const outcome=$('exec-outcome').value,challenges=$('exec-challenges').value;
+  const planId=$('exec-planid').value;
+  if(!execId||!actId||isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
+  const planRec=planId?plans.find(p=>p.id==planId):null;
+  const fy=planRec?planRec.fy:'FY26-27';
+
+  setBackendStatus('💾 Saving to Google Sheet...','info');
+  const res = await apiCall('addExecution', {execution:{planId,execId,month,year,fy,actId,qty,unit,days,outcome,challenges}});
+  if(res.ok){
+    executions.push(res.execution);
+    clearExecForm(); renderExecList();
+    setBackendStatus('✓ Execution saved to Google Sheet','ok');
+    alert2(planId?'✓ Execution submitted!':'⚡ Unplanned execution submitted!', planId?'ok':'warn',2000);
+  } else {
+    setBackendStatus('✗ Save failed.','err');
+    alert2(res.error||'Could not save the execution.','err',5000);
+  }
+}
+function clearExecForm(){
+  $('exec-planid').value='';clearExecAutofill();
+  $('exec-vertical').value='';filterActs('exec');
+  ['exec-qty','exec-days','exec-outcome','exec-challenges'].forEach(id=>$(id).value='');
+  $('banner-unplan').style.display='block';
+}
+
+
+// ── EDIT EXECUTION ────────────────────────────────────────
+function openEditModal(execId){
+  const ex = executions.find(e => e.id === execId);
+  if(!ex) return;
+  editingExecId = execId;
+
+  // Populate modal fields
+  $('edit-id').value = ex.id;
+  $('edit-exec').value = ex.execId;
+  $('edit-month').value = ex.month;
+  $('edit-year').value = ex.year;
+
+  // Rebuild plan links for edit modal
+  const ps=plans.filter(p=>p.execId==ex.execId&&p.month==ex.month&&p.year==ex.year);
+  $('edit-planid').innerHTML=`<option value="">— No plan (unplanned) —</option>`+
+    ps.map(p=>`<option value="${p.id}">${actLabel(p.actId)} · ${qtyLabel(p.qty,p.unit)} / ${p.days} days</option>`).join('');
+  $('edit-planid').value = ex.planId || '';
+
+  // Set activity and vertical
+  const vert = actVertical(ex.actId);
+  $('edit-vertical').value = vert;
+  filterActs('edit');
+  $('edit-activity').value = ex.actId;
+
+  $('edit-qty').value = ex.qty;
+  setUnit('edit', ex.unit);
+  $('edit-days').value = ex.days;
+  $('edit-outcome').value = ex.outcome || '';
+  $('edit-challenges').value = ex.challenges || '';
+
+  $('edit-modal').classList.add('active');
+}
+
+function closeEditModal(){
+  $('edit-modal').classList.remove('active');
+  editingExecId = null;
+}
+
+async function saveEditExecution(){
+  if(!editingExecId) return;
+
+  const qty=parseFloat($('edit-qty').value);
+  const unit=getUnit('edit');
+  const days=parseFloat($('edit-days').value);
+  const outcome=$('edit-outcome').value;
+  const challenges=$('edit-challenges').value;
+  const actId=$('edit-activity').value;
+
+  if(isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
+
+  const idx = executions.findIndex(e => e.id === editingExecId);
+  if(idx === -1) return;
+
+  setBackendStatus('💾 Saving changes to Google Sheet...','info');
+  const res = await apiCall('updateExecution', {id:editingExecId, patch:{actId, qty, unit, days, outcome, challenges}});
+  if(res.ok){
+    executions[idx] = res.execution;
+    closeEditModal();
+    renderExecList();
+    renderDashboard();
+    setBackendStatus('✓ Changes saved to Google Sheet','ok');
+    alert2('✓ Execution updated!','ok',2000);
+  } else {
+    setBackendStatus('✗ Save failed.','err');
+    alert2(res.error||'Could not save changes.','err',5000);
+  }
+}
+
+// ── Delete ─────────────────────────────────────────────────
+async function delPlan(id){
+  if(!confirm("कृपया पुनः जांच लें, ये आपका रिकॉर्ड है और आप इसे डिलीट करना चाहते हैं!")) return;
+  const res = await apiCall('deletePlan', {id});
+  if(res.ok){
+    plans=plans.filter(p=>p.id!==id);
+    renderPlanList();
+    setBackendStatus('✓ Plan deleted (recoverable by a manager from Trash)','ok');
+    alert2('Plan deleted.','ok',2000);
+  } else {
+    setBackendStatus('✗ Delete failed.','err');
+    alert2(res.error||'Could not delete the plan.','err',4000);
+  }
+}
+async function delExec(id){
+  if(!confirm("कृपया पुनः जांच लें, ये आपका रिकॉर्ड है और आप इसे डिलीट करना चाहते हैं!")) return;
+  const res = await apiCall('deleteExecution', {id});
+  if(res.ok){
+    executions=executions.filter(e=>e.id!==id);
+    renderExecList();
+    renderDashboard();
+    setBackendStatus('✓ Execution deleted (recoverable by a manager from Trash)','ok');
+    alert2('Execution deleted.','ok',2000);
+  } else {
+    setBackendStatus('✗ Delete failed.','err');
+    alert2(res.error||'Could not delete the execution.','err',4000);
+  }
+}
+
+// ── Trash (manager only) — view + restore soft-deleted records ─────
+async function renderTrash(){
+  if(!isManager()){
+    $('trash-plan-table').innerHTML='<p style="font-size:13px;color:var(--text-muted)">Managers only.</p>';
+    $('trash-exec-table').innerHTML='';
+    return;
+  }
+  $('trash-plan-table').innerHTML='<p style="font-size:13px;color:var(--text-muted)">Loading…</p>';
+  $('trash-exec-table').innerHTML='';
+  const res = await apiCall('listTrash', {});
+  if(!res.ok){
+    $('trash-plan-table').innerHTML=`<p style="font-size:13px;color:var(--text-danger)">${res.error||'Could not load trash.'}</p>`;
+    return;
+  }
+  const execName=id=>{const e=EXECS.find(x=>x.id===id); return e?e.name:id;};
+
+  $('trash-plan-table').innerHTML = res.plans.length ? `<table><tr><th>Worker</th><th>Month</th><th>Activity</th><th>Qty</th><th>Deleted by</th><th>Deleted at</th><th></th><th></th></tr>`+
+    res.plans.map(p=>`<tr><td>${execName(p.execId)}</td><td>${p.month} ${p.year}</td><td>${actLabel(p.actId)}</td><td>${qtyLabel(p.qty,p.unit)}</td><td>${execName(p.deletedBy)}</td><td>${p.deletedAt?new Date(Number(p.deletedAt)).toLocaleString():''}</td><td><button class="btn sm" onclick="restorePlan('${p.id}')">↩ Restore</button></td><td><button class="btn sm danger" onclick="permanentlyDeletePlan('${p.id}')">⛔ Delete Forever</button></td></tr>`).join('')+`</table>`
+    : `<p style="font-size:13px;color:var(--text-muted)">No deleted plans.</p>`;
+
+  $('trash-exec-table').innerHTML = res.executions.length ? `<table><tr><th>Worker</th><th>Month</th><th>Activity</th><th>Qty</th><th>Deleted by</th><th>Deleted at</th><th></th><th></th></tr>`+
+    res.executions.map(x=>`<tr><td>${execName(x.execId)}</td><td>${x.month} ${x.year}</td><td>${actLabel(x.actId)}</td><td>${qtyLabel(x.qty,x.unit)}</td><td>${execName(x.deletedBy)}</td><td>${x.deletedAt?new Date(Number(x.deletedAt)).toLocaleString():''}</td><td><button class="btn sm" onclick="restoreExec('${x.id}')">↩ Restore</button></td><td><button class="btn sm danger" onclick="permanentlyDeleteExec('${x.id}')">⛔ Delete Forever</button></td></tr>`).join('')+`</table>`
+    : `<p style="font-size:13px;color:var(--text-muted)">No deleted executions.</p>`;
+
+  if(res._debug){
+    const dbg=$('trash-debug') || (() => {
+      const d=document.createElement('div');
+      d.id='trash-debug';
+      d.style.cssText='margin-top:14px;padding:10px;background:var(--surface-2,#f5f5f5);border-radius:8px;font-size:11px;color:var(--text-muted);font-family:monospace;white-space:pre-wrap';
+      $('trash-plan-table').parentNode.appendChild(d);
+      return d;
+    })();
+    dbg.textContent = `Debug — total plan rows in Sheet: ${res._debug.totalPlanRows}, total execution rows: ${res._debug.totalExecutionRows}\n`+
+      `"deleted" values seen in Plans sheet: ${JSON.stringify(res._debug.planDeletedValues)}`;
+  }
+}
+
+async function restorePlan(id){
+  const res = await apiCall('restorePlan', {id});
+  if(res.ok){
+    plans.push(res.plan);
+    alert2('✓ Plan restored.','ok',2500);
+    renderTrash(); renderPlanList();
+  } else {
+    alert2(res.error||'Could not restore.','err',4000);
+  }
+}
+async function restoreExec(id){
+  const res = await apiCall('restoreExecution', {id});
+  if(res.ok){
+    executions.push(res.execution);
+    alert2('✓ Execution restored.','ok',2500);
+    renderTrash(); renderExecList(); renderDashboard();
+  } else {
+    alert2(res.error||'Could not restore.','err',4000);
+  }
+}
+
+async function permanentlyDeletePlan(id){
+  if(!confirm('This will permanently erase this plan. It cannot be undone or recovered. Continue?')) return;
+  const res = await apiCall('permanentlyDeletePlan', {id});
+  if(res.ok){ alert2('Plan permanently deleted.','ok',2500); renderTrash(); }
+  else { alert2(res.error||'Could not delete.','err',4000); }
+}
+async function permanentlyDeleteExec(id){
+  if(!confirm('This will permanently erase this execution. It cannot be undone or recovered. Continue?')) return;
+  const res = await apiCall('permanentlyDeleteExecution', {id});
+  if(res.ok){ alert2('Execution permanently deleted.','ok',2500); renderTrash(); }
+  else { alert2(res.error||'Could not delete.','err',4000); }
+}
+
+// ── Manage activities (manager only) ──────────────────────
+function toggleNewVertical(){
+  const on=$('mgr-new-vertical').checked;
+  $('mgr-vertical').style.display=on?'none':'block';
+  $('mgr-vertical-new').style.display=on?'block':'none';
+}
+function onMgrVerticalChange(){/* nothing extra needed */}
+
+async function addCustomActivity(){
+  if(!isManager()){alert2('Only managers can add activities.','err');return;}
+  const newVert=$('mgr-new-vertical').checked;
+  const vert=newVert?$('mgr-vertical-new').value.trim():$('mgr-vertical').value;
+  const name=$('mgr-act-name').value.trim();
+  const sub=$('mgr-act-sub').value.trim();
+  const unit=$('mgr-act-unit').value;
+  if(!vert||!name||!sub){alert2('Please fill vertical, activity name, and sub-activity.','err');return;}
+  const res = await apiCall('addActivity', {activity:{vertical:vert,name,sub,unit}});
+  if(!res.ok){
+    setBackendStatus('✗ Could not save activity.','err');
+    alert2(res.error||'Could not save the activity.','err',4000);
+    return;
+  }
+  ACTS.push(res.activity);
+  setBackendStatus('Activity saved to backend.','ok');
+  // reset form
+  $('mgr-new-vertical').checked=false; toggleNewVertical();
+  $('mgr-vertical-new').value=''; $('mgr-act-name').value=''; $('mgr-act-sub').value='';
+  buildVerticalSelects(); filterActs('plan'); filterActs('exec');
+  renderActivityTable();
+  alert2(`✓ Activity "${name} › ${sub}" added under "${vert}".`);
+}
+
+// ── Team & Passwords (manager only) ─────────────────────────
+function renderTeamTable(){
+  const el=$('team-table');
+  if(!el) return;
+  if(!isManager()){ el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">Managers only.</p>'; return; }
+  if(!EXECS.length){ el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">No users loaded.</p>'; return; }
+  el.innerHTML = `<div class="tbl-wrap"><table><tr><th>Name</th><th>Branch</th><th>Role</th><th></th></tr>`+
+    EXECS.map(u=>`<tr><td>${u.name}</td><td>${u.branch||''}</td><td>${u.role}</td><td><button class="btn sm" onclick="resetUserPassword('${u.id}','${u.name.replace(/'/g,"\\'")}')">🔑 Reset password</button></td></tr>`).join('')+
+    `</table></div>`;
+}
+
+async function resetUserPassword(userId, userName){
+  const newPassword = prompt(`Set a new password for ${userName} (min 4 characters):`);
+  if(newPassword===null) return;
+  if(newPassword.length < 4){ alert2('Password must be at least 4 characters.','err',3000); return; }
+  const res = await apiCall('resetPassword', {targetUserId:userId, newPassword});
+  if(res.ok){ alert2(`✓ Password reset for ${userName}. Tell them their new password.`,'ok',4000); }
+  else { alert2(res.error||'Could not reset password.','err',4000); }
+}
+
+async function addNewUser(){
+  const id=$('new-user-id').value.trim();
+  const name=$('new-user-name').value.trim();
+  const branch=$('new-user-branch').value.trim();
+  const role=$('new-user-role').value;
+  const password=$('new-user-password').value;
+  if(!id||!name||!password){ alert2('ID, name, and password are required.','err',3000); return; }
+  if(password.length<4){ alert2('Password must be at least 4 characters.','err',3000); return; }
+
+  const res = await apiCall('addUser', {newUser:{id, username:id, name, branch, role, password}});
+  if(res.ok){
+    EXECS.push({id:res.user.id, name:res.user.name, branch:res.user.branch, role:res.user.role});
+    ['new-user-id','new-user-name','new-user-branch','new-user-password'].forEach(i=>$(i).value='');
+    $('new-user-role').value='Field Executive';
+    renderTeamTable();
+    refreshSelectors();
+    alert2(`✓ ${name} added. Username: ${id}, password: (as set).`,'ok',4000);
+  } else {
+    alert2(res.error||'Could not add member.','err',4000);
+  }
+}
+
+function renderActivityTable(){
+  const fv=$('mgr-filter-vert')?$('mgr-filter-vert').value:'';
+  const list=fv?ACTS.filter(a=>a.vertical===fv):ACTS;
+  $('act-count').textContent=`(${list.length} activities)`;
+  if(!list.length){$('act-table').innerHTML=`<div class="empty">No activities.</div>`;return;}
+  $('act-table').innerHTML=`<table><thead><tr><th>Vertical</th><th>Activity</th><th>Sub-activity</th><th>Default unit</th><th>Type</th></tr></thead><tbody>`+
+    list.map(a=>`<tr>
+      <td><span class="tag">${a.vertical}</span></td>
+      <td style="font-size:12px;font-weight:500">${a.name}</td>
+      <td style="font-size:12px;color:var(--text-secondary)">${a.sub}</td>
+      <td><span class="tag">${a.unit}</span></td>
+      <td>${a.custom?`<span class="badge custom">Custom</span>`:`<span class="badge gray">Predefined</span>`}</td>
+    </tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Render plan list ───────────────────────────────────────
+function renderPlanList(){
+  const eid=$('plan-exec').value,m=$('plan-month').value,y=$('plan-year').value;
+  const ps=plans.filter(p=>p.execId==eid&&p.month==m&&p.year==y);
+  const el=$('plan-list');
+  if(!ps.length){el.innerHTML=`<div class="empty">No plans yet for this selection.</div>`;return;}
+  el.innerHTML=`<table><thead><tr><th>Activity</th><th>Quantity</th><th>Days</th><th>Notes</th><th></th></tr></thead><tbody>`+
+    ps.map(p=>`<tr><td>${actLabel(p.actId)}</td>
+      <td><b>${p.qty}</b> <span style="color:var(--text-muted);font-size:12px">${p.unit}</span></td>
+      <td>${p.days}</td>
+      <td style="color:var(--text-secondary)">${p.notes||'—'}</td>
+      <td><button class="btn sm danger" onclick="delPlan('${p.id}')">✕</button></td></tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Render exec list ───────────────────────────────────────
+function renderExecList(){
+  const eid=$('exec-exec').value,m=$('exec-month').value,y=$('exec-year').value;
+  const es=executions.filter(e=>e.execId==eid&&e.month==m&&e.year==y);
+  const el=$('exec-list');
+
+  const totalQty = es.reduce((s,e)=>s+(isNumeric(e.qty)?e.qty:0),0);
+  const totalDays = es.reduce((s,e)=>s+e.days,0);
+  $('exec-summary').innerHTML = es.length > 0 
+    ? `<span class="exec-badge">${es.length} entries · ${totalQty.toLocaleString()} total · ${totalDays} days</span>`
+    : '';
+
+  if(!es.length){el.innerHTML=`<div class="empty">No executions yet for this selection.</div>`;return;}
+  el.innerHTML=`<table><thead><tr><th>Activity</th><th>Type</th><th>Quantity</th><th>Days</th><th>Outcome</th><th></th></tr></thead><tbody>`+
+    es.map(e=>`<tr class="${e.planId?'':'unrow'}">
+      <td>${actLabel(e.actId)}</td>
+      <td>${e.planId?`<span class="badge b">Planned</span>`:`<span class="badge p">Unplanned</span>`}</td>
+      <td><b>${e.qty}</b> <span style="color:var(--text-muted);font-size:12px">${e.unit}</span></td>
+      <td>${e.days}</td>
+      <td style="color:var(--text-secondary);font-size:12px">${e.outcome||'—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn sm edit" onclick="openEditModal('${e.id}')">✏️</button>
+        <button class="btn sm danger" onclick="delExec('${e.id}')">✕</button>
+      </td></tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Render dashboard ───────────────────────────────────────
+function renderDashboard(){
+  const eid=$('dash-exec').value,month=$('dash-month').value,fy=$('dash-fy').value;
+  let ps=plans,es=executions;
+  if(eid){ps=ps.filter(p=>p.execId==eid);es=es.filter(e=>e.execId==eid);}
+  if(month){ps=ps.filter(p=>p.month==month);es=es.filter(e=>e.month==month);}
+  if(fy){ps=ps.filter(p=>p.fy==fy);es=es.filter(e=>e.fy==fy);}
+
+  // KPIs — only numeric units are summed; mixed units shown as count
+  const pqty=ps.reduce((s,p)=>s+(isNumeric(p.qty)?p.qty:0),0);
+  const aqty=es.reduce((s,e)=>s+(isNumeric(e.qty)?e.qty:0),0);
+  const upQty=es.filter(e=>!e.planId).reduce((s,e)=>s+(isNumeric(e.qty)?e.qty:0),0);
+  const pd=ps.reduce((s,p)=>s+p.days,0);
+  const ad=es.reduce((s,e)=>s+e.days,0);
+  const pct=pqty>0?Math.round(aqty/pqty*100):0;
+  const col=pct>=90?'g':pct>=60?'a':'r';
+
+  $('kpi-row').innerHTML=`
+    <div class="kpi"><h3>Planned qty</h3><div class="v">${pqty.toLocaleString()}</div></div>
+    <div class="kpi"><h3>Actual qty</h3><div class="v ${col}">${aqty.toLocaleString()}</div></div>
+    <div class="kpi"><h3>Achievement</h3><div class="v ${col}">${pct}%</div></div>
+    <div class="kpi"><h3>Unplanned qty</h3><div class="v p">${upQty.toLocaleString()}</div></div>
+    <div class="kpi"><h3>Planned days</h3><div class="v">${pd}</div></div>
+    <div class="kpi"><h3>Actual days</h3><div class="v">${ad}</div></div>
+  `;
+
+  // Gap table — group by actId, show unit alongside numbers
+  const byAct={};
+  ps.forEach(p=>{
+    if(!byAct[p.actId])byAct[p.actId]={actId:p.actId,plans:[],execs:[],isUp:false};
+    byAct[p.actId].plans.push(p);
+  });
+  es.forEach(e=>{
+    if(!byAct[e.actId])byAct[e.actId]={actId:e.actId,plans:[],execs:[],isUp:true};
+    byAct[e.actId].execs.push(e);
+    if(!e.planId&&byAct[e.actId].plans.length===0) byAct[e.actId].isUp=true;
+  });
+
+  const rows=Object.values(byAct).sort((a,b)=>a.isUp===b.isUp?b.plans.length-a.plans.length:a.isUp?1:-1);
+  const gt=$('gap-table');
+  if(!rows.length){gt.innerHTML=`<div class="empty">No data for this selection.</div>`;return;}
+
+  gt.innerHTML=`<table><thead><tr>
+    <th>Type</th><th>Activity</th>
+    <th style="text-align:right">Planned</th>
+    <th style="text-align:right">Actual</th>
+    <th style="text-align:right">Gap</th>
+    <th>Achievement</th>
+  </tr></thead><tbody>`+rows.map(r=>{
+    const act=actObj(r.actId);
+    const av=actVertical(r.actId);
+
+    // aggregate per unit type within this activity
+    const allUnits=[...new Set([...r.plans.map(p=>p.unit),...r.execs.map(e=>e.unit)])];
+    const unitRows=allUnits.map(u=>{
+      const pSum=r.plans.filter(p=>p.unit===u).reduce((s,p)=>s+p.qty,0);
+      const aSum=r.execs.filter(e=>e.unit===u).reduce((s,e)=>s+e.qty,0);
+      const pct2=pSum>0?Math.round(aSum/pSum*100):null;
+      const gap=aSum-pSum;
+      const bc=pct2===null?'gray':pct2>=90?'g':pct2>=60?'a':'r';
+      const fc=pct2===null?'#9b9994':pct2>=90?'#1D9E75':pct2>=60?'#BA7517':'#E24B4A';
+      return {u,pSum,aSum,pct2,gap,bc,fc};
+    });
+
+    // first unit row merged with activity info; subsequent rows are indented
+    return unitRows.map((ur,i)=>`<tr class="${r.isUp?'unrow':''}">
+      ${i===0?`
+        <td rowspan="${unitRows.length}">${r.isUp?`<span class="badge p">Unplanned</span>`:`<span class="badge b">Planned</span>`}</td>
+        <td rowspan="${unitRows.length}">
+          <div style="font-size:12px;font-weight:500">${act?act.name:r.actId}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${act?act.sub:''}</div>
+          ${act&&act.custom?`<span class="badge custom" style="margin-top:3px;font-size:10px">Custom</span>`:''}
+        </td>
+      `:''}
+      <td style="text-align:right">${ur.pSum>0?`<b>${ur.pSum.toLocaleString()}</b> <span style="font-size:11px;color:var(--text-muted)">${ur.u}</span>`:'—'}</td>
+      <td style="text-align:right"><b>${ur.aSum.toLocaleString()}</b> <span style="font-size:11px;color:var(--text-muted)">${ur.u}</span></td>
+      <td style="text-align:right">${r.isUp?`<span style="color:#7c3aed">+${ur.aSum.toLocaleString()} extra</span>`:`<span style="color:${ur.gap>=0?'var(--text-success)':'var(--text-danger)'}">${ur.gap>=0?'+':''}${ur.gap.toLocaleString()} ${ur.u}</span>`}</td>
+      <td style="min-width:95px">${ur.pct2!==null?`<span class="badge ${ur.bc}">${ur.pct2}%</span><div class="pbar"><div class="pfill" style="width:${Math.min(100,ur.pct2)}%;background:${ur.fc}"></div></div>`:`<span class="badge gray">Extra work</span>`}</td>
+    </tr>`).join('');
+  }).join('')+`</tbody></table>`;
+}
+
+// ── Render all records ─────────────────────────────────────
+function renderRecords(){
+  const eid=$('rec-exec').value,month=$('rec-month').value,fy=$('rec-fy').value;
+  const el=$('records-out');
+  if(activeTab==='plans'){
+    let ps=plans;
+    if(eid)ps=ps.filter(p=>p.execId==eid);
+    if(month)ps=ps.filter(p=>p.month==month);
+    if(fy)ps=ps.filter(p=>p.fy==fy);
+    if(!ps.length){el.innerHTML=`<div class="empty">No plan records found.</div>`;return;}
+    el.innerHTML=`<table><thead><tr><th>ID</th><th>Executive</th><th>Month/FY</th><th>Activity</th><th style="text-align:right">Planned qty</th><th style="text-align:right">Days</th><th>Notes</th></tr></thead><tbody>`+
+      ps.map(p=>{const ex=exObj(p.execId);return`<tr>
+        <td style="font-size:11px;color:var(--text-muted)">${p.id}</td>
+        <td>${ex?`<div>${ex.name}</div><div style="font-size:11px;color:var(--text-muted)">${ex.branch}</div>`:p.execId}</td>
+        <td><span class="badge b">${p.month} ${p.year}</span><br><span style="font-size:11px;color:var(--text-muted)">${p.fy}</span></td>
+        <td style="font-size:12px">${actLabel(p.actId)}</td>
+        <td style="text-align:right"><b>${p.qty}</b> <span style="font-size:11px;color:var(--text-muted)">${p.unit}</span></td>
+        <td style="text-align:right">${p.days}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${p.notes||'—'}</td>
+      </tr>`}).join('')+`</tbody></table>`;
+  } else {
+    let es=executions;
+    if(eid)es=es.filter(e=>e.execId==eid);
+    if(month)es=es.filter(e=>e.month==month);
+    if(fy)es=es.filter(e=>e.fy==fy);
+    if(!es.length){el.innerHTML=`<div class="empty">No execution records found.</div>`;return;}
+    el.innerHTML=`<table><thead><tr><th>ID</th><th>Executive</th><th>Month/FY</th><th>Type</th><th>Activity</th><th style="text-align:right">Actual qty</th><th style="text-align:right">Days</th><th>Outcome</th></tr></thead><tbody>`+
+      es.map(e=>{const ex=exObj(e.execId);return`<tr class="${e.planId?'':'unrow'}">
+        <td style="font-size:11px;color:var(--text-muted)">${e.id}</td>
+        <td>${ex?`<div>${ex.name}</div><div style="font-size:11px;color:var(--text-muted)">${ex.branch}</div>`:e.execId}</td>
+        <td><span class="badge b">${e.month} ${e.year}</span><br><span style="font-size:11px;color:var(--text-muted)">${e.fy}</span></td>
+        <td>${e.planId?`<span class="badge b">Planned</span>`:`<span class="badge p">Unplanned</span>`}</td>
+        <td style="font-size:12px">${actLabel(e.actId)}</td>
+        <td style="text-align:right"><b>${e.qty}</b> <span style="font-size:11px;color:var(--text-muted)">${e.unit}</span></td>
+        <td style="text-align:right">${e.days}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${e.outcome||'—'}</td>
+      </tr>`}).join('')+`</tbody></table>`;
+  }
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+
+<!-- EDIT EXECUTION MODAL -->
+<div id="edit-modal" class="modal-overlay" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Edit Execution Entry</h3>
+      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div class="frow">
+        <div class="fg"><label>Executive</label><select id="edit-exec" disabled style="opacity:0.6"></select></div>
+        <div class="fg"><label>Month</label><select id="edit-month" disabled style="opacity:0.6"><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option><option>Jan</option><option>Feb</option><option>Mar</option></select></div>
+        <div class="fg"><label>Year</label><select id="edit-year" disabled style="opacity:0.6"></select></div>
+        <div class="fg"><label>Link to plan</label><select id="edit-planid" disabled style="opacity:0.6"><option value="">— No plan (unplanned) —</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Vertical</label><select id="edit-vertical" onchange="filterActs('edit')"><option value="">All verticals</option></select></div>
+        <div class="fg"><label>Activity *</label><select id="edit-activity"></select></div>
+        <div class="fg"><label>Actual quantity *</label>
+          <div class="unit-pair">
+            <input type="number" id="edit-qty" placeholder="4" min="0" style="flex:0 0 75px">
+            <select id="edit-unit"><option>persons</option><option>villages</option><option>sessions</option><option>camps</option><option>trainings</option><option>applications</option><option>distributions</option><option>visits</option><option>enrolments</option><option>registrations</option><option>Other</option></select>
+          </div>
+          <input type="text" id="edit-unit-custom" placeholder="Describe unit…" style="display:none;margin-top:5px">
+        </div>
+        <div class="fg"><label>Actual days *</label><input type="number" id="edit-days" placeholder="3" min="0" step="0.5"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Outcome</label><textarea id="edit-outcome" placeholder="What was achieved…"></textarea></div>
+        <div class="fg"><label>Challenges</label><textarea id="edit-challenges" placeholder="Any issues or blockers…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn primary" onclick="saveEditExecution()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
