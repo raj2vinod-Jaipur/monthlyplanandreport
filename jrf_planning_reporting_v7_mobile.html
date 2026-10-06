@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>JRF Monthly Planning & Reporting</title>
+<!-- v12: low-traffic sync (5-min refresh, single retry, client version) -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -289,7 +290,7 @@ select,input,textarea{font-size:16px}
   <div class="fbox" style="margin-bottom:0">
     <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
       <div>
-        <label style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em">Google Sheet Backend</label>
+        <label style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em">Google Sheet Backend <span id="backend-version-badge" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)"></span></label>
         <div id="backend-status" style="font-size:12px;color:var(--text-secondary);margin-top:4px">Connecting...</div>
       </div>
       <button class="btn" onclick="syncFromBackend()" id="sync-btn">🔄 Sync Now</button>
@@ -507,7 +508,7 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 //  CONFIG: Paste your NEW Apps Script Web App URL here
 //  (the one deployed from Code.gs against your fresh Sheet)
 // ═══════════════════════════════════════════════════════════
-const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzSJVtqcivntR8Ly9H8iyliJbk2Z1xfXhUs20A7REp2w3GqcSufZ8zMBEPTc8aE76WA/exec';
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwS9AdnZEvIyCH0Dv0hTKnNfx0Q7S_NScigySGt40BXQ5JIphJjWcbcxRCYmxIso0r6/exec';
 
 let activeTab='plans';
 let currentUser=null; // set on login, e.g. {id,name,branch,role,username}
@@ -571,35 +572,101 @@ async function checkBackendVersion(){
   }
 }
 
+// Read-only actions are safe to retry automatically. Writes are NOT
+// retried blindly (that is what created duplicate rows) — instead the
+// submit functions verify whether the write actually landed.
+const CLIENT_VERSION = 'v12';
+const READ_ACTIONS = new Set(['bootstrap','listTrash']);
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+let writesInFlight = 0;   // auto-refresh waits while a save is running
+
+async function apiCallOnce(action, payload, timeoutMs){
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try{
+    const res = await fetch(BACKEND_URL,{
+      method:'POST',
+      redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(Object.assign({action, token: authToken, clientVersion: CLIENT_VERSION, clientRequestId: payload && payload._rid}, payload || {})),
+      signal: controller.signal,
+      cache:'no-store'
+    });
+    const text = await res.text();
+    let data=null;
+    try{ data = JSON.parse(text); }catch(e){ data=null; }
+    if(!data){
+      // Apps Script returns an HTML page (not JSON) when Google itself
+      // rejects the call: quota hit, script timeout, deployment problem.
+      const t = text.toLowerCase();
+      let msg = 'Server sent an unexpected reply (HTTP '+res.status+').';
+      if(t.includes('too many') || t.includes('service invoked') || t.includes('simultaneous'))
+        msg = 'Google server is busy (too many requests at once). Retrying…';
+      else if(t.includes('exceeded maximum execution time') || t.includes('timed out'))
+        msg = 'Google Sheet took too long to respond.';
+      else if(t.includes('lock'))
+        msg = 'Sheet is busy with another user\'s save.';
+      else if(t.includes('sign in') || t.includes('accounts.google.com'))
+        msg = 'Backend deployment is not public. Set "Who has access: Anyone" and redeploy.';
+      return {ok:false, error:msg, transient:true};
+    }
+    return data;
+  }catch(e){
+    if(e.name==='AbortError') return {ok:false, error:'Request timed out (slow network or busy server).', transient:true, timedOut:true};
+    return {ok:false, error: navigator.onLine===false ? 'You are offline. Check your internet connection.' : 'Network error: '+e.message, transient:true};
+  }finally{
+    clearTimeout(timeoutId);
+  }
+}
+
 async function apiCall(action, payload){
   if(!BACKEND_URL || BACKEND_URL.indexOf('PASTE_YOUR')===0){
     alert2('Backend URL not configured yet. See BACKEND_URL near the top of the script.','err',6000);
     return {ok:false, error:'Backend not configured'};
   }
-  try{
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-    const res = await fetch(BACKEND_URL,{
-      method:'POST',
-      mode:'cors',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(Object.assign({action, token: authToken}, payload || {})),
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-    let data=null;
-    try{ data = await res.json(); } catch(e){ try{ data = JSON.parse(await res.text()); } catch(err){ data=null; } }
-    if(!data){ return {ok:false, error:'No response from server.'}; }
-    if(data.ok===false && data.error==='Not logged in. Please log in again.'){
-      // Session expired — send back to login.
-      logout(false);
-    }
-    return data;
-  }catch(e){
-    if(e.name==='AbortError') return {ok:false, error:'Request timed out.'};
-    return {ok:false, error:'Network error: '+e.message};
+  const isRead = READ_ACTIONS.has(action);
+  // A request carrying _rid is protected by the backend (v7+) against
+  // duplicates, so it is safe to resend after a timeout/network error.
+  const backendHasDedupe = /^v(\d+)/.test(backendVersionSeen||'') && Number(RegExp.$1) >= 7;
+  const safeToResend = isRead || (!!(payload && payload._rid) && backendHasDedupe);
+  const timeoutMs = 60000;
+  let data;
+  for(let i=0;i<2;i++){
+    if(i>0) await sleep(5000 + Math.random()*5000); // one retry after 5–10 s
+    data = await apiCallOnce(action, payload, timeoutMs);
+    if(data.ok!==false) break;
+    // "Server busy" (lock not obtained) means nothing was written → always retry.
+    if(data.busy) continue;
+    if(data.transient && safeToResend) continue;
+    break;
   }
+  if(data._backendVersion){
+    backendVersionSeen = data._backendVersion;
+    const badge = $('backend-version-badge');
+    if(badge) badge.textContent = '(' + data._backendVersion + ')';
+  }
+  if(data.ok===false && data.outdated){ alert2(data.error,'err',0); }
+  if(data.ok===false && /not logged in/i.test(data.error||'')){
+    logout(false);
+    alert2('Your session expired. Please log in again.','warn',6000);
+  }
+  return data;
 }
+
+// After a write fails with a timeout/network error the row may still
+// have been saved on the server. Re-load and look for it before telling
+// the user it failed (otherwise they press Save again -> duplicate row).
+async function findLandedRecord(listName, beforeIds, matchFn){
+  for(let i=0;i<2;i++){
+    await sleep(2500 + i*3000);
+    const r = await apiCall('bootstrap', {});
+    if(!r.ok) continue;
+    const found = (r[listName]||[]).find(x=>!beforeIds.has(x.id) && matchFn(x));
+    if(found) return found;
+  }
+  return null;
+}
+const same = (a,b) => String(a==null?'':a).trim() === String(b==null?'':b).trim();
 
 // ── Login / session ──────────────────────────────────────────
 function loadStoredSession(){
@@ -646,32 +713,48 @@ async function afterLogin(){
   if(ok){
     setBackendStatus('✓ Connected (backend '+(backendVersionSeen||'unknown')+'). Showing '+(isManager()?'all workers\' data (Manager view)':'your data only')+'.','ok');
   } else {
-    setBackendStatus('Could not load data from the backend. Check BACKEND_URL and try Sync Now.','err');
+    setBackendStatus('Could not load data: '+(bootstrapFromBackend.lastError||'unknown error')+' — wait a minute, then press Sync Now.','err');
   }
   $('nav-manage').style.display = isManager()?'':'none';
   $('nav-trash').style.display = isManager()?'':'none';
   refreshSelectors();
   renderDashboard();
+  startAutoRefresh();
 }
 
 function logout(callServer){
   if(callServer!==false && authToken){ apiCall('logout', {}); }
   authToken=null; currentUser=null; EXECS=[]; ACTS=[]; plans=[]; executions=[];
   clearStoredSession();
+  stopAutoRefresh();
   $('app-root').classList.add('hidden');
   $('login-screen').classList.remove('hidden');
   $('login-username').value=''; $('login-password').value='';
 }
 
+let dataGen = 0;            // bumped on every local add/edit/delete
+let bootstrapPromise = null;
+let lastSyncOk = 0;
 async function bootstrapFromBackend(){
-  const res = await apiCall('bootstrap', {});
-  if(res && res._backendVersion) backendVersionSeen = res._backendVersion;
-  if(!res.ok) return false;
-  ACTS = res.acts || [];
-  EXECS = res.execs || [];
-  plans = res.plans || [];
-  executions = res.executions || [];
-  return true;
+  // Only one load at a time — repeated clicks, tab switches and the timer
+  // used to fire overlapping requests that piled up on Apps Script.
+  if(bootstrapPromise) return bootstrapPromise;
+  bootstrapPromise = (async()=>{
+    const genAtStart = dataGen;
+    const res = await apiCall('bootstrap', {});
+    if(res && res._backendVersion) backendVersionSeen = res._backendVersion;
+    if(!res.ok){ bootstrapFromBackend.lastError = res.error; return false; }
+    // If the user saved/edited/deleted something while this load was in
+    // flight, the response is older than local data — don't overwrite it.
+    if(genAtStart !== dataGen){ setTimeout(()=>silentSync(true), 3000); return true; }
+    ACTS = res.acts || [];
+    EXECS = res.execs || [];
+    plans = res.plans || [];
+    executions = res.executions || [];
+    lastSyncOk = Date.now();
+    return true;
+  })();
+  try{ return await bootstrapPromise; } finally { bootstrapPromise = null; }
 }
 
 async function syncFromBackend(){
@@ -682,10 +765,10 @@ async function syncFromBackend(){
   if(ok){
     refreshSelectors();
     renderDashboard();
-    setBackendStatus('✓ Sync complete.','ok');
+    setBackendStatus('✓ Sync complete — received '+plans.length+' plans, '+executions.length+' executions, '+ACTS.length+' activities (backend '+(backendVersionSeen||'?')+').','ok');
     alert2('Sync complete!','ok',2000);
   } else {
-    setBackendStatus('✗ Sync failed.','err');
+    setBackendStatus('✗ Sync failed: '+(bootstrapFromBackend.lastError||'unknown error')+' Your saved data is safe — try again in a minute.','err');
   }
 }
 
@@ -838,6 +921,9 @@ function showPage(name,btn){
   if(name==='records') renderRecords();
   if(name==='manage'){buildVerticalSelects();renderActivityTable();renderTeamTable();}
   if(name==='trash'){renderTrash();}
+  // Quietly pull in any teammates' updates whenever you open a page that
+  // shows shared data — no need to hit "Sync Now" by hand.
+  if(name==='dashboard'||name==='records'||name==='trash') silentSync();
 }
 function switchTab(tab,el){
   activeTab=tab;
@@ -845,6 +931,51 @@ function switchTab(tab,el){
   el.classList.add('active');
   renderRecords();
 }
+
+// ── Quiet background auto-refresh ────────────────────────────
+// Keeps the Dashboard/Records/Trash current without the user having to
+// remember to click "Sync Now" by hand — runs in the background, doesn't touch
+// whatever the user might be typing into the Add Plan/Execution forms.
+let _autoRefreshTimer = null;
+let _refreshDelay = 90000;           // normal: every ~90s
+const REFRESH_BASE = 300000, REFRESH_MAX = 900000; // every 5 min; up to 15 min after failures
+async function silentSync(force){
+  if(!authToken) return;
+  if(writesInFlight>0) return;                       // never race a save
+  if(!force && Date.now()-lastSyncOk < 180000) return; // tab switches refresh at most every 3 min
+  const activePageBefore = document.querySelector('.page.active');
+  const activeName = activePageBefore ? activePageBefore.id.replace('page-','') : '';
+  const ok = await bootstrapFromBackend();
+  if(!ok){
+    _refreshDelay = Math.min(_refreshDelay*2, REFRESH_MAX);
+    setBackendStatus('⚠ Auto-refresh failed ('+(bootstrapFromBackend.lastError||'error')+'). Will retry automatically.','err');
+    return;
+  }
+  _refreshDelay = REFRESH_BASE;
+  if(activeName==='plan' || activeName==='execution') return; // don't disturb open forms
+  refreshSelectors();
+  if(activeName==='dashboard') renderDashboard();
+  if(activeName==='records') renderRecords();
+  if(activeName==='trash') renderTrash();
+  setBackendStatus('✓ Up to date (auto-refreshed '+new Date().toLocaleTimeString()+')','ok');
+}
+function scheduleNextRefresh(){
+  if(_autoRefreshTimer) clearTimeout(_autoRefreshTimer);
+  // random jitter so 15 users don't all hit Google at the same second
+  _autoRefreshTimer = setTimeout(async()=>{
+    if(document.visibilityState==='visible' && navigator.onLine!==false) await silentSync(true);
+    if(authToken) scheduleNextRefresh();
+  }, _refreshDelay + Math.random()*20000);
+}
+function startAutoRefresh(){ _refreshDelay = REFRESH_BASE; scheduleNextRefresh(); }
+function stopAutoRefresh(){
+  if(_autoRefreshTimer){ clearTimeout(_autoRefreshTimer); _autoRefreshTimer=null; }
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible' && authToken && Date.now()-lastSyncOk>300000) silentSync(true);
+});
+window.addEventListener('online',()=>{ if(authToken){ setBackendStatus('Back online — refreshing…','info'); silentSync(true); } });
+window.addEventListener('offline',()=>setBackendStatus('⚠ You are offline. Saves will fail until the connection returns.','err'));
 
 // ── Execution context ──────────────────────────────────────
 function onExecCtxChange(){
@@ -913,15 +1044,27 @@ async function _submitPlan(){
   if(!execId||!actId||isNaN(qty)||isNaN(days)){alert2('Please fill all required fields.','err');return;}
 
   setBackendStatus('💾 Saving to Google Sheet...','info');
-  const res = await apiCall('addPlan', {plan:{execId,month,year,fy,actId,qty,unit,days,notes}});
+  const beforeIds = new Set(plans.map(p=>p.id));
+  writesInFlight++; dataGen++;
+  let res;
+  try{
+    res = await apiCall('addPlan', {_rid:uid()+Date.now(), plan:{execId,month,year,fy,actId,qty,unit,days,notes}});
+    if(!res.ok && res.transient){
+      setBackendStatus('⏳ Slow reply — checking whether the plan was saved…','info');
+      const landed = await findLandedRecord('plans', beforeIds, p=>
+        same(p.execId,execId)&&same(p.month,month)&&same(p.year,year)&&same(p.actId,actId)&&
+        Number(p.qty)===qty&&Number(p.days)===days&&same(p.notes,notes));
+      if(landed) res = {ok:true, plan:landed};
+    }
+  } finally { writesInFlight--; dataGen++; }
   if(res.ok){
-    plans.push(res.plan);
+    if(!plans.some(p=>p.id===res.plan.id)) plans.push(res.plan);
     clearPlanForm(); renderPlanList();
     setBackendStatus('✓ Plan saved to Google Sheet','ok');
     alert2('✓ Plan entry added!','ok',2000);
   } else {
     setBackendStatus('✗ Save failed.','err');
-    alert2(res.error||'Could not save the plan.','err',5000);
+    alert2((res.error||'Could not save the plan.')+' Your entry is still in the form — press Save again when ready.','err',8000);
   }
 }
 function clearPlanForm(){['plan-qty','plan-days','plan-notes'].forEach(id=>$(id).value='');}
@@ -941,15 +1084,27 @@ async function _submitExecution(){
   const fy=planRec?planRec.fy:'FY26-27';
 
   setBackendStatus('💾 Saving to Google Sheet...','info');
-  const res = await apiCall('addExecution', {execution:{planId,execId,month,year,fy,actId,qty,unit,days,outcome,challenges}});
+  const beforeIds = new Set(executions.map(e=>e.id));
+  writesInFlight++; dataGen++;
+  let res;
+  try{
+    res = await apiCall('addExecution', {_rid:uid()+Date.now(), execution:{planId,execId,month,year,fy,actId,qty,unit,days,outcome,challenges}});
+    if(!res.ok && res.transient){
+      setBackendStatus('⏳ Slow reply — checking whether the execution was saved…','info');
+      const landed = await findLandedRecord('executions', beforeIds, e=>
+        same(e.execId,execId)&&same(e.month,month)&&same(e.year,year)&&same(e.actId,actId)&&
+        Number(e.qty)===qty&&Number(e.days)===days&&same(e.planId,planId)&&same(e.outcome,outcome));
+      if(landed) res = {ok:true, execution:landed};
+    }
+  } finally { writesInFlight--; dataGen++; }
   if(res.ok){
-    executions.push(res.execution);
+    if(!executions.some(e=>e.id===res.execution.id)) executions.push(res.execution);
     clearExecForm(); renderExecList();
     setBackendStatus('✓ Execution saved to Google Sheet','ok');
     alert2(planId?'✓ Execution submitted!':'⚡ Unplanned execution submitted!', planId?'ok':'warn',2000);
   } else {
     setBackendStatus('✗ Save failed.','err');
-    alert2(res.error||'Could not save the execution.','err',5000);
+    alert2((res.error||'Could not save the execution.')+' Your entry is still in the form — press Save again when ready.','err',8000);
   }
 }
 function clearExecForm(){
@@ -1014,7 +1169,9 @@ async function saveEditExecution(){
   if(idx === -1) return;
 
   setBackendStatus('💾 Saving changes to Google Sheet...','info');
+  writesInFlight++; dataGen++;
   const res = await apiCall('updateExecution', {id:editingExecId, patch:{actId, qty, unit, days, outcome, challenges}});
+  writesInFlight--; dataGen++;
   if(res.ok){
     executions[idx] = res.execution;
     closeEditModal();
@@ -1031,7 +1188,9 @@ async function saveEditExecution(){
 // ── Delete ─────────────────────────────────────────────────
 async function delPlan(id){
   if(!confirm("कृपया पुनः जांच लें, ये आपका रिकॉर्ड है और आप इसे डिलीट करना चाहते हैं!")) return;
+  writesInFlight++; dataGen++;
   const res = await apiCall('deletePlan', {id});
+  writesInFlight--; dataGen++;
   if(res.ok){
     plans=plans.filter(p=>p.id!==id);
     renderPlanList();
@@ -1044,7 +1203,9 @@ async function delPlan(id){
 }
 async function delExec(id){
   if(!confirm("कृपया पुनः जांच लें, ये आपका रिकॉर्ड है और आप इसे डिलीट करना चाहते हैं!")) return;
+  writesInFlight++; dataGen++;
   const res = await apiCall('deleteExecution', {id});
+  writesInFlight--; dataGen++;
   if(res.ok){
     executions=executions.filter(e=>e.id!==id);
     renderExecList();
@@ -1097,7 +1258,7 @@ async function renderTrash(){
 async function restorePlan(id){
   const res = await apiCall('restorePlan', {id});
   if(res.ok){
-    plans.push(res.plan);
+    if(!plans.some(p=>p.id===res.plan.id)) plans.push(res.plan);
     alert2('✓ Plan restored.','ok',2500);
     renderTrash(); renderPlanList();
   } else {
@@ -1107,7 +1268,7 @@ async function restorePlan(id){
 async function restoreExec(id){
   const res = await apiCall('restoreExecution', {id});
   if(res.ok){
-    executions.push(res.execution);
+    if(!executions.some(e=>e.id===res.execution.id)) executions.push(res.execution);
     alert2('✓ Execution restored.','ok',2500);
     renderTrash(); renderExecList(); renderDashboard();
   } else {
@@ -1167,7 +1328,7 @@ function renderTeamTable(){
   if(!isManager()){ el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">Managers only.</p>'; return; }
   if(!EXECS.length){ el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">No users loaded.</p>'; return; }
   el.innerHTML = `<div class="tbl-wrap"><table><tr><th>Name</th><th>Branch</th><th>Role</th><th></th></tr>`+
-    EXECS.map(u=>`<tr><td>${u.name}</td><td>${u.branch||''}</td><td>${u.role}</td><td><button class="btn sm" onclick="resetUserPassword('${u.id}','${u.name.replace(/'/g,"\\'")}')">🔑 Reset password</button></td></tr>`).join('')+
+    EXECS.map(u=>`<tr><td>${u.name}</td><td>${u.branch||''}</td><td>${u.role}</td><td><button class="btn sm" onclick="resetUserPassword('${u.id}','${u.name.replace(/'/g,"\\'")}' )">🔑 Reset password</button></td></tr>`).join('')+
     `</table></div>`;
 }
 
